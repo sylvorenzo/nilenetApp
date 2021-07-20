@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1076430489041",
+    "firebase_url": "https://nilenet-c9b39-default-rtdb.firebaseio.com",
+    "project_id": "nilenet-c9b39",
+    "storage_bucket": "nilenet-c9b39.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1076430489041:android:f5443755f0dc5839ba8cf0",
+        "android_client_info": {
+          "package_name": "com.nilenetapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1076430489041-vu3abh4p2iogn51uo9ilhh8ajk108nul.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB0keDpiPdHUeMUMJrmhx9OwbK2gYWGbFg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1076430489041-vu3abh4p2iogn51uo9ilhh8ajk108nul.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
