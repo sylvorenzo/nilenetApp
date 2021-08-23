@@ -20,7 +20,7 @@ export function DrawerContent(props){
     var [typeReader, setTypeReader] = useState('');
     useEffect(()=>{
 
-        database().ref(`users/entrepreneurInfo/${auth().currentUser.uid}`).on('value', snapshot =>{
+        database().ref(`users/${auth().currentUser.uid}`).on('value', snapshot =>{
             if(snapshot.exists()){
                  let Items = snapshot.val();
                  let newItems = [];
@@ -28,9 +28,12 @@ export function DrawerContent(props){
                  
                      newItems.push({
                          username: Items.username,
+                         surname: Items.surname,
                          companyName: Items.companyName,
                          profileImage: Items.profileImage,
-                         sectorOfBusiness: Items.sectorOfBusiness,
+                         sectorOfBusiness: Items.sector,
+                         type:Items.type,
+                         token: Items.token
                              
                      });
              
@@ -40,22 +43,6 @@ export function DrawerContent(props){
  
         });
 
-        // retreives user type data from database
-       database().ref(`users/${auth().currentUser.uid}`).on('value', snapshot=>{
-        if(snapshot.exists()){
-     
-         let types = snapshot.val();
-         let newType=[];
-
-          setType(type = types.type);
-
-          if(type === 'Entrepreneur'){
-              setTypeReader(typeReader = 'Entrepreneur');
-          }else if(type === 'Investor'){
-              setTypeReader(typeReader = '');
-          }
-        }
-    });
     },[])
     const {signOut} = useContext(AuthContext);
     return(
@@ -63,20 +50,21 @@ export function DrawerContent(props){
            <DrawerContentScrollView {...props}>
                 <View style={styles.drawerContent}>
                     <View style={styles.userInfoSection}>
-                        <View style={{flexDirection:'row',marginTop:15}}>
+                        <View style={{flexDirection:'row',paddingTop:15, backgroundColor:'gray'}}>
                             {items.map(item=>{
-
+                            
                                 return(
                                     <View>
                                     <Avatar.Image
+                                    style={{alignSelf:'center', }}
                                     source={{
                                     uri:item.profileImage
                                     }}
                                     size={60}
                                     />
                                     <View style={{marginLeft:15, flexDirection:'column'}}>
-                                        <Title style={styles.title}>{item.username}</Title>
-                                        <Caption style={styles.caption}>{type}</Caption>
+                                        <Title style={styles.title}>{item.username} {item.surname}</Title>
+                                        <Caption style={styles.caption}>{item.type}</Caption>
                                     </View>
                                     </View>
 
@@ -115,7 +103,7 @@ export function DrawerContent(props){
                                 size={size}
                             />)}
                             label='Support'
-                            onPress={()=>{props.navigation.navigate('Support')}}
+                            onPress={()=>{props.navigation.navigate('support')}}
                         />
 
                     </Drawer.Section>
@@ -138,19 +126,21 @@ export function DrawerContent(props){
 }
 const styles = StyleSheet.create({
     drawerContent:{
-        flex:1,
+        
     },
     userInfoSection:{
-        paddingLeft:20,
+        backgroundColor:'black'
     },
     title:{
         fontSize:16,
+        color:'white',
         marginTop:3,
         fontWeight:'bold',
     },
     caption:{
         fontSize:14,
         lineHeight:14,
+        color:'white'
     },
     row:{
         marginTop:20,

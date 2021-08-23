@@ -57,7 +57,7 @@ class TermsScreen extends Component{
 
                 <View style={styles.child}>
                     
-                    <Touch style={styles.conditionsBtn} onPress={()=>this.props.navigation.navigate("Sign Up")}>
+                    <Touch style={styles.conditionsBtn} onPress={()=>this.props.navigation.navigate("Sign In")}>
                         <Text style={styles.conditionsBtnText}>I Agree</Text>
                     </Touch>
                 </View>

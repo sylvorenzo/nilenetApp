@@ -9,83 +9,99 @@ import { StyleSheet,
     Platform,
     ScrollView
     } from 'react-native';
-import background from '../assets/background.png';
+import background from '../assets/launch_screen.jpg';
 import {Picker} from '@react-native-picker/picker';
 import {AuthContext} from '../components/context'
 
 
 function SignUpScreen({navigation}){
     
-    const[data, setData]= useState({
-        email:'',
-        password:'',
-        confirmpassword:'',
-        check_textInputChange:false,
-        secureTextEntry:true,
-        confirm_secureTextEntry:true,
-        type:'Select Type'
-    });
+    const [username, setUsername] = useState('');
+    const [surname, setSurname] = useState('');
+    const [email, setEmail] = useState('');
+    const [companyName, setComapanyName] = useState('');
+    const [sector, setSector] =useState('');
+    const [type, setType] =useState('');
+    const [password, setPassword] = useState('');
+    const [confirmPassword,setConfimPassword] = useState('');
+ 
     const {signUp} = React.useContext(AuthContext);
-    const textInputChange = (val)=>{
-        if(val.length !== 0){
-             setData({
-                 ...data,
-                 email:val,
-                 check_textInputChange:true,
-             })
-        }else{
-            setData({
-                ...data,
-                email:val,
-                check_textInputChange:false,
-            })
-        }
-    }
-    const handlePasswordChange = (val)=>{
-        if(val.length !== 0){
-             setData({
-                 ...data,
-                 password:val,
-                })
-        }
-        
-    }
-    const handleConfirmPasswordChange = (val)=>{
-        if(val.length !== 0){
-             setData({
-                 ...data,
-                 confirmpassword:val,
-                })
-        }
-        
-    }
+
 
     return(
     <ScrollView style={styles.main}>
-        <StatusBar backgroundColor="white"/>
+        <StatusBar backgroundColor="#e6e3e3"/>
     
         
         <ImageBackground source={background} resizeMode="cover" style={{flex:1,}}>
         <View style={styles.first}>
         <Text style={styles.text_header}>Register Now!</Text>
         </View>
-            <Text style={styles.text_footer}>Email</Text>
+        <View style={styles.inputContainer}>
+        <Text style={styles.text_footer}>Email</Text>
             <View style={styles.action}>
                 <TextInput
                 placeholder="Your Email"
                 style={styles.textInput}
                 autoCapitalize="none"
-                onChangeText={(val)=>textInputChange(val)}
+                value={email}
+                onChangeText={(val)=>setEmail(val)}
+                />
+            </View>
+            <Text style={styles.text_footer}>Name</Text>
+            <View style={styles.action}>
+                <TextInput
+                placeholder="Your Name"
+                style={styles.textInput}
+                autoCapitalize="none"
+                value={username}
+                onChangeText={(val)=>setUsername(val)}
+                />
+            </View>
+            <Text style={styles.text_footer}>Surname</Text>
+            <View style={styles.action}>
+                <TextInput
+                placeholder="Your Surname"
+                style={styles.textInput}
+                autoCapitalize="none"
+                value={surname}
+                onChangeText={(val)=>setSurname(val)}
+                />
+            </View>
+            <Text style={styles.text_footer}>Company Name</Text>
+            <View style={styles.action}>
+                <TextInput
+                placeholder="Your Company Name"
+                style={styles.textInput}
+                autoCapitalize="none"
+                value={companyName}
+                onChangeText={(val)=>setComapanyName(val)}
                 />
             </View>
             <Text style={styles.text_footer}></Text>
             <View style={styles.action}>
                 <Picker
-                selectedValue={data.type}
+                selectedValue={sector}
                 style={styles.textInput}
                 autoCapitalize="none"
-                onValueChange={(itemValue, index)=>setData({type:itemValue})}
+                onValueChange={(itemValue)=>setSector(itemValue)}
                 >
+                    <Picker.Item label="Select Sector Of Interest" value=""/>
+                    <Picker.Item label="Tourism" value="tourism"/>
+                    <Picker.Item label = "Manufacturing"  value = "manufacturing"/>
+                    <Picker.Item label = "Finances"  value = "finances"/>
+                    <Picker.Item label = "Agriculture"  value = "Agriculture"/>
+                </Picker>
+            </View>
+            <Text style={styles.text_footer}></Text>
+            <View style={styles.action}>
+                <Picker
+                selectedValue={type}
+                style={styles.textInput}
+                autoCapitalize="none"
+                onValueChange={(itemValue)=>setType(itemValue)}
+                >
+                    <Picker.Item label="Select Type" value=""/>
                     <Picker.Item label="Entrepreneur" value="Entrepreneur"/>
                     <Picker.Item label = "Investor"  value = "Investor"/>
                 </Picker>
@@ -98,7 +114,8 @@ function SignUpScreen({navigation}){
                 style={styles.textInput}
                 autoCapitalize="none"
                 secureTextEntry={true}
-                onChangeText={(val)=>handlePasswordChange(val)}
+                value={password}
+                onChangeText={(val)=>setPassword(val)}
                 />
             </View>
             <Text style={styles.text_footer}>Confirm Password</Text>
@@ -109,11 +126,12 @@ function SignUpScreen({navigation}){
                 style={styles.textInput}
                 autoCapitalize="none"
                 secureTextEntry={true}
-                onChangeText={(val)=>handlePasswordChange(val)}
+                value={confirmPassword}
+                onChangeText={(e)=>setConfimPassword(e)}
                 />
             </View>
             <View style={styles.button}>
-                <Touch style={styles.SignIn}  onPress={()=>signUp(data.email,data.password,data.type)}>
+                <Touch style={styles.SignIn}  onPress={()=>signUp(email,password,confirmPassword,type, username,surname,sector,companyName)}>
                     <Text style={styles.textSign}>Sign Up</Text>
                 </Touch>
                 <Touch onPress={()=>navigation.navigate("Sign In")}
@@ -125,6 +143,8 @@ function SignUpScreen({navigation}){
                 </Touch>
                 
             </View>
+        </View>
+ 
 
         </ImageBackground>
         
@@ -135,6 +155,12 @@ function SignUpScreen({navigation}){
     );
 }
 const styles = StyleSheet.create({
+    inputContainer:{
+        backgroundColor:'rgba(0,0,0,0.5)',
+        margin:10,
+        borderRadius:25,
+        padding:10,
+    },
     main:{
         backgroundColor:'white',
         flex:1,
@@ -168,7 +194,7 @@ const styles = StyleSheet.create({
     },
     text_footer:{
 
-        color:'#05375a',
+        color:'orange',
         fontSize:18,
         marginTop:35,
         marginBottom: 5,

@@ -1,8 +1,8 @@
 
 import React,{useState}from 'react';
-import { StyleSheet,ScrollView,StatusBar,ImageBackground, Text, View,TextInput,TouchableOpacity as Touch,Image, Platform} from 'react-native';
-import background from '../assets/background.png';
-import auth from '@react-native-firebase/app';
+import { StyleSheet,ScrollView,StatusBar,ImageBackground,Alert, Text, View,TextInput,TouchableOpacity as Touch,Image, Platform} from 'react-native';
+import background from '../assets/launch_screen.jpg';
+import auth from '@react-native-firebase/auth';
 import {AuthContext} from '../components/context';
 
 function SignInScreen({navigation}){
@@ -43,22 +43,13 @@ function SignInScreen({navigation}){
         
     }
 
-    const handleLogin = (email,password)=>{
-        auth().signInWithEmailAndPassword(email,password).then(()=>{
-        
-            setValues({user:fire.auth().currentUser.uid})
-      
-          
-          }).catch((e)=>{
-            alert(e);
-          })
-    }
+
 
     
     return(
-    <ScrollView style={{flex:1, backgroundColor:'white'}}>
-        <StatusBar backgroundColor="white"/>
-        <ImageBackground source={background} style={{flex:1}}>
+    <ScrollView>
+        <StatusBar backgroundColor="#e3e3e3"/>
+        <ImageBackground source={background} style={{flex:1, height:730}}>
         <View style={styles.first}>
             <Text style={styles.text_header}>Welcome!</Text>
         </View>
@@ -99,7 +90,13 @@ function SignInScreen({navigation}){
                     </Text>
                 </Touch>
 
-                <Touch style={styles.link}>
+                <Touch style={styles.link} onPress={()=> 
+                    auth().sendPasswordResetEmail(data.email).then(()=>{
+                        Alert.alert("Email Sent!", 'Password Reset link has been sent to Your Account!')
+                      }).catch((e)=>{
+                        Alert.alert("An Error Has Occurred",e)
+                      })
+                    }>
                     <Text style={{color:'black'}}>Forgot Password?
                         <Text style={{color:'red'}}> Reset.</Text> 
                     </Text>
@@ -116,12 +113,12 @@ function SignInScreen({navigation}){
 }
 const styles = StyleSheet.create({
     main:{
-        backgroundColor:'white',
-        flex:1,
+        
+        
         
     },
     first:{
-        flex:1,
+        
         justifyContent:'flex-end',
         paddingHorizontal:20,
         paddingBottom:50,
@@ -131,12 +128,11 @@ const styles = StyleSheet.create({
 
     },
     footer:{
-        flex:3,
-        backgroundColor:'transparent',
-        borderTopLeftRadius: 30,
-        borderTopRightRadius:30,
-        paddingHorizontal:25,
-        paddingVertical:30,
+        
+        backgroundColor:'rgba(0,0,0,0.5)',
+        margin:10,
+        padding: 10,
+        borderRadius:25,
 
     },
     text_header:{
@@ -148,7 +144,7 @@ const styles = StyleSheet.create({
     },
     text_footer:{
 
-        color:'#05375a',
+        color:'orange',
         fontSize:18,
         marginTop:35,
         marginBottom: 5,
@@ -168,7 +164,7 @@ const styles = StyleSheet.create({
         flex:1,
         marginTop: Platform.OS ==='ios' ? 0:-12,
         paddingLeft:10,
-        color: '#c2c2c2',
+        color: 'black',
         borderWidth: 1,
         borderRadius: 25,
     

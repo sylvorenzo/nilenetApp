@@ -1,27 +1,20 @@
-import React,{Component, useRef} from 'react'
-import {View, 
-    Text, 
-    Image,
-    StyleSheet,
+import React,{Component} from  'react'
+import { ScrollView, Text,View,StyleSheet, 
     TouchableOpacity as Touch,
+    TextInput,    
     PermissionsAndroid,
-    TextInput,
-    ScrollView,
-    Platform,
-    FlatList,
     TouchableHighlight,
-    Alert} from 'react-native';
+    Image,Alert
+ } from 'react-native'
 import { Card } from 'react-native-paper';
 import CameraRoll from "@react-native-community/cameraroll";
-import RBSheet from "react-native-raw-bottom-sheet";
 import storage from '@react-native-firebase/storage';
 import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth';
+import RBSheet from "react-native-raw-bottom-sheet";
 import {Picker} from '@react-native-picker/picker';
 
-
-
-class PostScreen extends Component{
+class EditProfileScreen extends Component{
 
     constructor(props) {
         super(props);
@@ -36,13 +29,15 @@ class PostScreen extends Component{
             projectStatus:'',
             userInfo:[],
             projectDescription:'',
+            sector:'',
+            type:'',
+            companyDescription:'',
             
         };
         this.getSelectedImages = this.getSelectedImages.bind(this)
-      }
-    
-      componentDidMount(){
-      
+    }
+
+    componentDidMount(){
         database().ref(`users/${auth().currentUser.uid}`).on('value', snapshot =>{
             if(snapshot.exists()){
                  let Items = snapshot.val();
@@ -55,8 +50,8 @@ class PostScreen extends Component{
                          type: Items.type,
                          companyName: Items.companyName,
                          profileImage: Items.profileImage,
-                         sector: Items.sector,
-                         token: Items.token,
+                         sectorOfBusiness: Items.sector,
+                
                              
                      });
              
@@ -65,11 +60,8 @@ class PostScreen extends Component{
             }
  
         });
-        
-      }
-
-      
-     async handleImage(){
+    }
+    async PhotoHandler(){
         if (Platform.OS === 'android') {
             const result = await PermissionsAndroid.request(
               PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
@@ -113,78 +105,63 @@ class PostScreen extends Component{
         
         console.log('image selected: ',this.state.selected);
       };
-
-     async handlePost(){
-          var uri = this.state.selected;
-          const filename = uri.substring(uri.lastIndexOf('/') + 1);
-        
-           console.log(filename);
-         
-          const uploadUri =  uri.replace('file://','');
-
-          const task = storage().ref("images/"+ filename).putFile(uploadUri);
-
-          task.on("state_changed", snapshot =>{
+      async handlePost(){
+        var uri = this.state.selected;
+        const filename = uri.substring(uri.lastIndexOf('/') + 1);
+      
+         console.log(filename);
        
-        }, error =>{
-          //logs error
-            console.log(error )
-        },()=>{
-          //gets url of image
-            storage().ref("images").child(filename).getDownloadURL().then(url =>{
-                const current = auth().currentUser;
-            
-                
-                console.log(url);
-                this.setState({url:url});
-                
-                
-        
-              if(current != null){
-                //stores information in database
-                this.state.userInfo.map(item=>{
-                    var newPostKey = Date.now();
-                    database().ref(`posts/entrepreneurs/${current.uid}/${newPostKey}`).set({
-                        id: newPostKey,
-                        projectImage: this.state.url,
-                        uid: current.uid,
-                        projectTitle: this.state.projectTitle,
-                        projectStatus: this.state.projectStatus,
-                        projectDescription: this.state.projectDescription,
-                        username: item.username,
-                        surname: item.surname,
-                        profileImage: item.profileImage,
-                        token:item.token,
-                        sector:item.sector,
-                      }).then(()=>{
-                        Alert.alert('Upload Complete!',
-                        'Your Post has Successfully been Uploaded!')
-                      });
+        const uploadUri =  uri.replace('file://','');
+
+        const task = storage().ref("images/"+ filename).putFile(uploadUri);
+
+        task.on("state_changed", snapshot =>{
+     
+      }, error =>{
+        //logs error
+          console.log(error )
+      },()=>{
+        //gets url of image
+          storage().ref("images").child(filename).getDownloadURL().then(url =>{
+              const current = auth().currentUser;
           
-                      database().ref(`public/posts/${newPostKey}`).set({
-                        id: newPostKey,
-                        projectImage: this.state.url,
-                        projectTitle: this.state.projectTitle,
-                        projectStatus: this.state.projectStatus,
-                        uid: current.uid,
-                        projectDescription: this.state.projectDescription,
-                        username: item.username,
-                        surname: item.surname,
-                        profileImage: item.profileImage,
-                        token:item.token,
-                        sector:item.sector
-                      })
-                })
-                
-            
-    
-              }
-            });
-            
-        })
+              
+              console.log(url);
+              this.setState({url:url});
+              
+              
+      
+            if(this.state.url != ''){
+              //stores information in database
+              this.state.userInfo.map(item=>{
+                  database().ref(`users/${auth().currentUser.uid}`).set({
+                      
+                      username: item.username,
+                      surname:item.surname,
+                      type: item.type,
+                      companyName:item.companyName,
+                      sector: this.state.sector,
+                      profileImage: this.state.url,
+                      companyDescription: this.state.companyDescription,
+                    }).then(()=>{
+                      Alert.alert('Update Complete',
+                      'Your Profile has Successfully been Updated!')
+                    });
         
-      }
-    
+                    
+              })
+              
+          
+  
+            }
+          });
+          
+      })
+      
+    }
+
+
+
     render(){
         return(
             <ScrollView style={{backgroundColor:'gray'}}>
@@ -200,7 +177,7 @@ class PostScreen extends Component{
                     
                     />
                 </Card>
-                <Touch onPress={()=>{this.handleImage()}}>
+                <Touch onPress={()=>this.PhotoHandler()}>
                     <Text style={styles.imageText}>Select Image</Text>
                 </Touch>
 
@@ -209,31 +186,26 @@ class PostScreen extends Component{
 
                 
                 <View style={styles.descriptionSection}>
-                    <TextInput
-                        style={styles.questionsTextInput}
-                        placeholder= "Enter Project Name"
-                        value={this.state.projectTitle}
-                        onChangeText={(e)=>{this.setState({projectTitle:e})}}
-                    />
-                    <Picker
-                    selectedValue={this.state.projectStatus}
-                    style={styles.textInput}
-                    autoCapitalize="none"
-                    onValueChange={(itemValue)=>this.setState({projectStatus:itemValue})}
-                    >
-                    <Picker.Item label="Select Project Status" value=""/>
-                    <Picker.Item label="Beginning Stages" value="Beginning Stages"/>
-                    <Picker.Item label = "Project In Development"  value = "Project In Development"/>
-                    </Picker>
-                   
-                    <TextInput
-                        style={styles.questionsTextInput}
-                        placeholder= "Enter a description"
-                        value={this.state.projectDescription}
-                        onChangeText={(e)=>{this.setState({projectDescription:e})}}
-                    />
+                <Picker
+                selectedValue={this.state.sector}
+                style={styles.textInput}
+                autoCapitalize="none"
+                onValueChange={(itemValue)=>this.setState({sector:itemValue})}
+                >
+                    <Picker.Item label="Tourism" value="tourism"/>
+                    <Picker.Item label = "Manufacturing"  value = "manufacturing"/>
+                    <Picker.Item label = "Finances"  value = "finances"/>
+                    <Picker.Item label = "Agriculture"  value = "Agriculture"/>
+                </Picker>
+                <TextInput
+                style={styles.textInput}
+                multiline={true}
+                placeholder="Describe your company in a few words"
+                value={this.state.companyDescription}
+                onChangeText={(e)=>this.setState({companyDescription:e})}
+                />
                     <Touch onPress={()=>{this.handlePost()}}>
-                        <Text style={styles.postBtn}>Post Project</Text>
+                        <Text style={styles.postBtn}>Update Profile</Text>
                     </Touch>
                 </View>
                 <RBSheet
@@ -274,7 +246,8 @@ class PostScreen extends Component{
         )
     }
 }
-export default PostScreen;
+export default EditProfileScreen;
+
 const styles = StyleSheet.create({
     card:{
         height: 280,
@@ -314,6 +287,17 @@ const styles = StyleSheet.create({
         margin:10,
         borderTopRightRadius:25,
     },
+    caption:{
+        flexDirection:'column',
+        fontSize:14,
+        lineHeight:20,
+        marginTop:10,
+        fontSize:20,
+        marginRight:65,
+        marginBottom:30,
+        textAlign:'center',
+        color:'white',
+    },
     imageText:{
         margin:10,
         color:'white',
@@ -330,5 +314,15 @@ const styles = StyleSheet.create({
         marginTop:-1,
         borderBottomLeftRadius:50,
         backgroundColor:'white'
-    }
+    },
+    textInput:{
+      flex:1,
+      marginTop: Platform.OS ==='ios' ? 0:-12,
+      paddingLeft:10,
+      color: 'black',
+      borderWidth: 1,
+      borderRadius: 25,
+  
+
+  },
 })

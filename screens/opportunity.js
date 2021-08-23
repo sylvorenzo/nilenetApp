@@ -1,12 +1,17 @@
 import React from 'react';
-import {View,Text,StatusBar, StyleSheet, TouchableOpacity as Touch} from 'react-native';
+import {View,
+    Text,
+    StatusBar, 
+    StyleSheet, 
+    TouchableOpacity as Touch,
+    Linking} from 'react-native';
 
 
 function OpportunityScreen({navigation}){
 
     return(
         <View>
-            <StatusBar backgroundColor="#ffffff"/>
+            <StatusBar backgroundColor="gray"/>
             <View style={styles.contentContainer}>
                 <Text style={styles.heading}>Opportunities</Text>
                 <Text style={styles.content}>
@@ -22,16 +27,16 @@ function OpportunityScreen({navigation}){
                         To find out more about tenders visit the tender site.
                 </Text>
             </View>
+            <Touch onPress={()=>navigation.navigate('project')}>
             <View style={styles.projectsContainer}>
-                <Touch>
-                    <Text style={styles.project}>Projects</Text>
-                </Touch>
+                <Text style={styles.project}>Projects</Text>
             </View>
+            </Touch>
+            <Touch onPress={()=>Linking.openURL('https://www.eTenders.gov.za').catch(ee=> console.error('An Error Occurred', ee))}>
             <View style={styles.tenderContainer}>
-                <Touch>
-                    <Text style={styles.project}>Tenders</Text>
-                </Touch>
+                <Text style={styles.project}>Tenders</Text>   
             </View>
+            </Touch>
 
         </View>
     )
@@ -42,7 +47,7 @@ const styles = StyleSheet.create({
     tenderContainer:{
         backgroundColor:'black',
         margin:10,
-        minHeight: 100,
+        minHeight: 70,
         borderRadius:10,
         justifyContent: 'center',
         textAlign:'center'
@@ -57,7 +62,7 @@ const styles = StyleSheet.create({
     projectsContainer:{
         backgroundColor:'orange',
         margin:10,
-        minHeight: 100,
+        minHeight: 70,
         borderRadius:10,
         justifyContent: 'center',
         textAlign:'center'
