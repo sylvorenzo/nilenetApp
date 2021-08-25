@@ -103,7 +103,7 @@ function MainStackScreen({navigation}){
         <MainStack.Navigator screenOptions={{
             title:'NILENET',
             headerStyle:{
-                backgroundColor: "gray",
+                backgroundColor: "#eb7434",
     
             },
             headerTintColor:'white',
@@ -121,14 +121,14 @@ function MainStackScreen({navigation}){
             <MainStack.Screen name = "Resources" options={{title:'Resources',
             headerTintColor:'white',
             headerStyle:{
-                backgroundColor:'black'
+                backgroundColor:'#07adb3'
             }
         }} component={ResourcesScreen}/>
             <MainStack.Screen name = "Profile" component={ProfileScreen}/>
             <MainStack.Screen name = "Chat" 
                 options={{title:'Messenger',headerTintColor:'white',
                 headerStyle:{
-                    backgroundColor:'gray'
+                    backgroundColor:'#07adb3'
                 }
             }}
                 component={ChatScreen}
@@ -138,11 +138,16 @@ function MainStackScreen({navigation}){
                 component={ContactsScreen}
             />
             <MainStack.Screen name = "finances" 
-                options={{title:'Finances'}} 
+                options={{title:'Finances',headerStyle:{
+                    backgroundColor:'#07adb3'
+                }}
+            } 
                 component={FinanceScreen}
             />
             <MainStack.Screen name = "documents" 
-                options={{title:'Documents'}} 
+                options={{title:'Documents',headerStyle:{
+                    backgroundColor:'#07adb3'
+                }}} 
                 component={RequiredDocumentationScreen}
             />
             <MainStack.Screen name = "business" 

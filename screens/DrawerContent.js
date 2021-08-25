@@ -1,5 +1,5 @@
 import React,{useContext, useEffect, useState} from 'react';
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, StatusBar} from 'react-native';
 import {DrawerContentScrollView, DrawerItem} from '@react-navigation/drawer';
 import {
   Avatar,
@@ -47,39 +47,40 @@ export function DrawerContent(props){
     const {signOut} = useContext(AuthContext);
     return(
         <View style={{flex:1}}>
-           <DrawerContentScrollView {...props}>
-                <View style={styles.drawerContent}>
+           <DrawerContentScrollView {...props} style={styles.Parent}>
+               <StatusBar backgroundColor="#eb7434"/>
+                
                     <View style={styles.userInfoSection}>
-                        <View style={{flexDirection:'row',paddingTop:15, backgroundColor:'gray'}}>
+                        
                             {items.map(item=>{
                             
                                 return(
-                                    <View>
+                                    <View style={{paddingTop:10,position:'absolute', backgroundColor:'#eb7434',  width:300, }}>
                                     <Avatar.Image
-                                    style={{alignSelf:'center', }}
+                                    style={{marginLeft:100,}}
                                     source={{
                                     uri:item.profileImage
                                     }}
                                     size={60}
                                     />
-                                    <View style={{marginLeft:15, flexDirection:'column'}}>
+                                 
                                         <Title style={styles.title}>{item.username} {item.surname}</Title>
                                         <Caption style={styles.caption}>{item.type}</Caption>
-                                    </View>
+                                    
                                     </View>
 
                                 )
                             })}
                     
-                        </View>
-                       
-                    </View>
-                    <Drawer.Section style={styles.drawerSection}>
+                        
+                   
+                </View>
+                <Drawer.Section style={styles.drawerSection}>
                     <Drawer.Item
                             icon={({color,size}) => (
                             <MaterialCommunityIcons
                                 name='account-outline'
-                                color={color}
+                                color='white'
                                 size={size}
                             />)}
                             label='Profile'
@@ -89,7 +90,7 @@ export function DrawerContent(props){
                             icon={({color,size}) => (
                             <MaterialCommunityIcons
                                 name='book-multiple-outline'
-                                color={color}
+                                color='white'
                                 size={size}
                             />)}
                             label='Resources'
@@ -99,7 +100,7 @@ export function DrawerContent(props){
                             icon={({color,size}) => (
                             <MaterialCommunityIcons
                                 name='account-group-outline'
-                                color={color}
+                                color='white'
                                 size={size}
                             />)}
                             label='Support'
@@ -107,7 +108,6 @@ export function DrawerContent(props){
                         />
 
                     </Drawer.Section>
-                </View>
            </DrawerContentScrollView>
            <Drawer.Section style={styles.bottomDrawerSection}>
                         <Drawer.Item
@@ -125,22 +125,31 @@ export function DrawerContent(props){
     );
 }
 const styles = StyleSheet.create({
-    drawerContent:{
-        
+    Parent:{
+        position: 'absolute',
+
     },
     userInfoSection:{
-        backgroundColor:'black'
+        position:'relative',
+        backgroundColor:'#eb7434',
+        width:400,
+        borderBottomRightRadius:25,
+        
+
+        
     },
     title:{
         fontSize:16,
         color:'white',
         marginTop:3,
         fontWeight:'bold',
+        marginLeft:80,
     },
     caption:{
         fontSize:14,
         lineHeight:14,
-        color:'white'
+        color:'white',
+        marginLeft:80,
     },
     row:{
         marginTop:20,
@@ -158,10 +167,14 @@ const styles = StyleSheet.create({
 
     },
     drawerSection:{
-        marginTop:15,
+        backgroundColor:'#eb7434',
+        marginTop:120,
+        borderBottomLeftRadius:25,
+        
 
     },
     bottomDrawerSection:{
+        marginTop:670,
         marginBottom:15,
         borderTopColor:'#f4f4f4',
         borderTopWidth:1,

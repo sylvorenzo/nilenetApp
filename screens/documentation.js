@@ -6,7 +6,7 @@ class RequiredDocumentationScreen extends Component{
     render(){
         return(
             <ScrollView>
-                <StatusBar backgroundColor="gray"/>
+                <StatusBar backgroundColor="#07adb3"/>
                 <Text>Required Documentation Screen</Text>
             </ScrollView>
         );

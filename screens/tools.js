@@ -16,7 +16,7 @@ class ToolScreen extends Component{
     render(){
         return(
             <ScrollView>
-                <StatusBar backgroundColor="gray"/>
+                <StatusBar backgroundColor="#eb7434"/>
                 <Card style={styles.card}>
                     <Text style={styles.title}>1.Slack</Text>
                     <Text style={styles.content}>

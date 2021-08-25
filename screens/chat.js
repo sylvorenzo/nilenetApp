@@ -7,7 +7,7 @@ import messaging from '@react-native-firebase/messaging';
 import io from "socket.io-client";
 import { GiftedChat } from 'react-native-gifted-chat';
 import background from '../assets/launch_screen.jpg';
-
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import {
     Avatar,
@@ -202,6 +202,7 @@ database().ref(`mykey/${parsedUser}`).once('value', snap=>{
       <View>
         
         <View>
+          <StatusBar backgroundColor="#07adb3"/>
         <ImageBackground source={background} style={{height:675}}>
           {users.map(item=>{
            
@@ -276,7 +277,8 @@ database().ref(`mykey/${parsedUser}`).once('value', snap=>{
             
           </ScrollView>
          
-          <View style={{flexDirection:'row'}}>
+          <View style={{flexDirection:'row', paddingBottom:40,}}>
+            
           <TextInput
                 style={styles.textInput}
                 placeholder={'Type a message...'}
@@ -284,7 +286,10 @@ database().ref(`mykey/${parsedUser}`).once('value', snap=>{
                 value={items.message}
               />
           <Touch onPress={React.useCallback(()=>handleMessage())}>
-            <Text>Send</Text>
+            
+            <MaterialCommunityIcons name="arrow-right-circle" color="white" size={38} style={{marginTop:15,}} />
+              
+            
           </Touch>           
           </View>
           </ImageBackground>

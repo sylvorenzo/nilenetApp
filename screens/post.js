@@ -187,14 +187,14 @@ class PostScreen extends Component{
     
     render(){
         return(
-            <ScrollView style={{backgroundColor:'gray'}}>
+            <ScrollView style={{backgroundColor:"#eb7434"}}>
                 <View style={styles.imageSection}>
                 <Card style={styles.card}>
                     <Card.Cover
                     
                     source={{uri:this.state.selected}}
                     style={{
-                        width:350,
+                        
                         height:280
                     }}
                     
@@ -203,11 +203,6 @@ class PostScreen extends Component{
                 <Touch onPress={()=>{this.handleImage()}}>
                     <Text style={styles.imageText}>Select Image</Text>
                 </Touch>
-
-                </View>
-               
-
-                
                 <View style={styles.descriptionSection}>
                     <TextInput
                         style={styles.questionsTextInput}
@@ -236,6 +231,11 @@ class PostScreen extends Component{
                         <Text style={styles.postBtn}>Post Project</Text>
                     </Touch>
                 </View>
+                </View>
+               
+
+                
+                
                 <RBSheet
                       ref={this.refRBSheet}
                       closeOnDragDown={false}
@@ -285,7 +285,7 @@ const styles = StyleSheet.create({
         marginTop:30,
         height:50,
         paddingTop:10,
-        marginLeft:10,
+        
         width:320,
         textAlign:'center',
         fontFamily:'Georgia, serif',
@@ -303,16 +303,18 @@ const styles = StyleSheet.create({
         borderRightWidth:0,
         borderLeftWidth:0,
         borderWidth: 0.5,
-        borderColor: 'white',
+        borderColor: 'black',
         padding: 10,
         borderRadius:25,
         
     },
     descriptionSection:{
         height:355,
-        backgroundColor:'gray',
-        margin:10,
-        borderTopRightRadius:25,
+        
+        backgroundColor:'white',
+        marginTop:0.05,
+        borderBottomRightRadius:25,
+        borderBottomLeftRadius:25,
     },
     imageText:{
         margin:10,
@@ -323,12 +325,13 @@ const styles = StyleSheet.create({
         textAlign:'center',
         fontFamily:'Georgia, serif',
         fontWeight:'bold',
-        borderBottomLeftRadius:50,
+        borderRadius:15,
     },
     imageSection:{
-        height: 350,
-        marginTop:-1,
-        borderBottomLeftRadius:50,
+        
+        margin:10,
+        padding:10,
+        borderRadius:25,
         backgroundColor:'white'
     }
 })

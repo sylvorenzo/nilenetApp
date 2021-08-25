@@ -12,13 +12,14 @@ import {View,
 import {
     Avatar,
     Title,
-    Caption,
+    ProgressBar,
     Card,
   } from 'react-native-paper';
 import {PieChart} from 'react-native-chart-kit';    
 import RBSheet from "react-native-raw-bottom-sheet";
 import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth';
+import * as Progress from 'react-native-progress'
 
 
 class FeedScreen extends Component{
@@ -36,7 +37,8 @@ class FeedScreen extends Component{
        behaviour: 'Position',
        key:'',
        search:'',
-       status:'Add Contact'
+       status:'Add Contact',
+       statistic: []
     }
   }
   
@@ -163,6 +165,38 @@ class FeedScreen extends Component{
         }
   
       })
+      database().ref(`stats`).on('value',snapshot=>{
+        if(snapshot.exists()){
+           const stats = snapshot.val();
+           
+
+           var keys = Object.keys(stats);
+          
+           for(let x = 0; x < keys.length; x++){
+             database().ref(`stats/${keys[x]}`).on('value',snap=>{
+               if(snap.exists()){
+                  const items = snap.val();
+                  const extensionArray = [];
+                  console.log('items: ', items);
+                  var newItems = [];
+                  newItems.push({
+                    Capital: items.Capital,
+                    Competitors: items.Competitors,
+                    Employees: items.Employees,
+                    Experience: items.Experience,
+                    Milestones: items.Milestones,
+                    uid: items.uid
+                  });
+                  extensionArray[x] = newItems;
+                  this.setState({statistic: extensionArray})
+
+
+               }
+             })
+           }
+
+        }
+      })
     }
 
    
@@ -197,13 +231,15 @@ handleFollow(uid,username,profileImage){
       render(){
         return(
           <View>
-            
-              <TextInput
+            <View style={{backgroundColor:'#eb7434', height:100, borderBottomRightRadius:25,}}>
+            <TextInput
                   style={styles.searchBar}
                   placeholder="Search..." 
                   value = {this.state.search}
                   onChangeText={(e)=> this.setState({search:e})}
               />
+            </View>
+
               <ScrollView>
 
 
@@ -274,9 +310,35 @@ handleFollow(uid,username,profileImage){
                                   />
                                   <View style={styles.descriptionContainer}>
                                       <Text style={styles.descriptionTxt}>{variable.companyName}</Text>
-                                      <Text>{variable.companyDescription}</Text>                            
+                                      <Text>{variable.companyDescription}</Text> 
+                                      {this.state.statistic.map(values=>values.map(value=>{
+
+                                        console.log('value: ', value);
+                                        if(item.id === value.uid){
+                                          return(
+                                            <View>
+                                      <Text style={styles.header}>EMPLOYEES </Text>
+                                          <Text style={styles.result}>{value.Employees} </Text>
+                                      <Text style={styles.header}>CAPITAL </Text>
+                                         <Text style={styles.result}>R{value.Capital}</Text>
+ 
+                                      <Text style={styles.header}>COMPETITORS  </Text>
+                                      <Text style={styles.result}>{value.Competitors} </Text>
+
+                                      <Text style={styles.header}>MANAGMENT EXPERIENCE </Text>
+                                      <Text style={styles.result}>{value.Experience} </Text>
+ 
+                                      <Text style={styles.header}>MILESTONES  </Text>
+                                      <Text style={styles.result}>{value.Milestones} </Text>
+                                      
+                                            </View>
+                                          )
+                                        }
+                                      }))}
+                                                     
                                   </View>
-                                              </View>
+                                  
+                                  </View>
                                           )
                                       }
                                   }))}
@@ -349,10 +411,34 @@ handleFollow(uid,username,profileImage){
                                   <View style={styles.descriptionContainer}>
                                     <StatusBar barStyle={'dark-content'} backgroundColor={"#e3ded8"} color="orange"/>
                                       <Text style={styles.descriptionTxt}>{variable.companyName}</Text>
-                                      <Text>{variable.companyDescription}</Text>                            
+                                      <Text>{variable.companyDescription}</Text>    
+                                      {this.state.statistic.map(values=>values.map(value=>{
+
+                                        console.log('value: ', value);
+                                        if(item.id = value.uid){
+                                          return(
+                                            <View>
+                                        <Text style={styles.header}>EMPLOYEES </Text>
+                                          <Text style={styles.result}>{value.Employees} </Text>
+                                        <Text style={styles.header}>CAPITAL </Text>
+                                        <Text style={styles.result}>R{value.Capital}</Text>
+
+                                        <Text style={styles.header}>COMPETITORS  </Text>
+                                        <Text style={styles.result}>{value.Competitors} </Text>
+
+                                        <Text style={styles.header}>MANAGMENT EXPERIENCE </Text>
+                                        <Text style={styles.result}>{value.Experience} </Text>
+
+                                        <Text style={styles.header}>MILESTONES  </Text>
+                                        <Text style={styles.result}>{value.Milestones} </Text>
+
+                                            </View>
+                                          )
+                                        }
+                                        }))}                        
                                   </View>
 
-                                              </View>
+                                  </View>
                                           )
                                       }
                                   }))}
@@ -472,6 +558,21 @@ handleFollow(uid,username,profileImage){
 export default FeedScreen;
 
 const styles = StyleSheet.create({
+
+ header:{
+  fontFamily:'Georgia,serif',
+  alignSelf:'center',
+  fontSize:15,
+  marginTop: 10,
+  fontWeight: 'bold',
+ },
+ result:{
+    color: 'orange',
+    fontFamily:'Georgia, serif',
+    fontSize: 17,
+    fontWeight: 'bold',
+    alignSelf:'center',
+ },
 
   sendContainer:{
       backgroundColor:'white',
@@ -639,7 +740,7 @@ const styles = StyleSheet.create({
     },
     descriptionContainer:{
         backgroundColor:'white',
-        minHeight:250,
+        minHeight:350,
         borderBottomRightRadius:10,
         borderBottomLeftRadius:10,
         marginBottom:10,
@@ -651,7 +752,7 @@ const styles = StyleSheet.create({
         borderRadius:10,
         backgroundColor:'black',
         
-        height:500,
+        height:600,
     },
     main:{
         backgroundColor:'#f0f8fa',
@@ -661,10 +762,10 @@ const styles = StyleSheet.create({
         marginTop: 20,
         margin:10,
         borderRadius:25,
-        borderColor: 'gray',
+        borderColor: 'white',
         borderWidth: 1,
         height:50,
         padding: 12,
-        backgroundColor: 'gray'
+        backgroundColor: 'white'
     }
 })

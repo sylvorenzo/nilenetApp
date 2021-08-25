@@ -12,6 +12,7 @@ import { StyleSheet,
 import background from '../assets/launch_screen.jpg';
 import {Picker} from '@react-native-picker/picker';
 import {AuthContext} from '../components/context'
+import { BlurView } from '@react-native-community/blur';
 
 
 function SignUpScreen({navigation}){
@@ -29,14 +30,19 @@ function SignUpScreen({navigation}){
 
 
     return(
-    <ScrollView style={styles.main}>
-        <StatusBar backgroundColor="#e6e3e3"/>
+    <ScrollView style={{backgroundColor:'white'}}>
+        <StatusBar backgroundColor="#e0e0e0"/>
     
         
-        <ImageBackground source={background} resizeMode="cover" style={{flex:1,}}>
-        <View style={styles.first}>
+        <ImageBackground source={background} style={{width:'100%',}} >
+        <View style={styles.header}>
         <Text style={styles.text_header}>Register Now!</Text>
         </View>
+        <BlurView
+          blurType='light'
+          style={styles.blurContainer}
+        >
+
         <View style={styles.inputContainer}>
         <Text style={styles.text_footer}>Email</Text>
             <View style={styles.action}>
@@ -137,60 +143,55 @@ function SignUpScreen({navigation}){
                 <Touch onPress={()=>navigation.navigate("Sign In")}
                     style={styles.link}
                 >
-                    <Text style={{color: 'black'}}>Already Have An Account? 
+                    <Text style={{color: 'white'}}>Already Have An Account? 
                         <Text style={{color:'red'}}> Sign In.</Text>
                     </Text>
                 </Touch>
                 
             </View>
         </View>
- 
-
+        </BlurView>
+        
         </ImageBackground>
         
-
-
-
+ 
     </ScrollView>
     );
 }
 const styles = StyleSheet.create({
+    blurContainer:{
+        marginTop:100,
+        margin:10,
+        height:1200,
+        borderRadius:25,
+        
+    },
     inputContainer:{
-        backgroundColor:'rgba(0,0,0,0.5)',
+        
         margin:10,
         borderRadius:25,
         padding:10,
+        width: 330,
+        height:1200,
+        position:'relative',
+        borderColor:'white',
+        borderWidth:0.5,
+        marginTop: 100,
     },
-    main:{
-        backgroundColor:'white',
-        flex:1,
-        
-    },
-    first:{
-        flex:1,
-        justifyContent:'flex-end',
-        paddingHorizontal:20,
-        paddingBottom:50,
-        color:'#fff',
-        
-      
-
-    },
-    footer:{
-        flex:3,
-        backgroundColor:'#fff',
-        borderTopLeftRadius: 30,
-        borderTopRightRadius:30,
-        paddingHorizontal:25,
-        paddingVertical:30,
-
+    header:{
+        height:300,
+        position:'absolute',
+        width:'100%',
+        borderBottomLeftRadius: 25
     },
     text_header:{
         
-        
+        marginTop:30,
+        padding:5,
         fontWeight:'bold',
         fontSize:30,
-        color:'black'
+        color:'black',
+        paddingBottom:50
     },
     text_footer:{
 
@@ -214,9 +215,10 @@ const styles = StyleSheet.create({
         flex:1,
         marginTop: Platform.OS ==='ios' ? 0:-12,
         paddingLeft:10,
-        color: 'black',
+        color: 'white',
         borderWidth: 1,
         borderRadius: 25,
+        borderColor:'black'
         
     
 

@@ -48,28 +48,28 @@ function BottomStackSection(){
         >
         <Tab.Screen name="project" component={ProjectScreen} options={{
           tabBarLabel: 'Projects',
-          tabBarColor:'gray',
+          tabBarColor:'#eb7434',
           tabBarIcon: ({ color }) => (
             <MaterialCommunityIcons name="cogs" color={color} size={26} />
           ),
         }}/>
         <Tab.Screen name="Feed" component={FeedScreen} options={{
           tabBarLabel: 'Feed',
-          tabBarColor:'black',
+          tabBarColor:"#ffbf00",
           tabBarIcon: ({ color }) => (
             <MaterialCommunityIcons name="post-outline" color={color} size={26} />
           ),
         }}/>
         <Tab.Screen name ="post" component={PostScreen} options={{
           tabBarLabel: 'Create Post',
-          tabBarColor:'gray',
+          tabBarColor:'#eb7434',
           tabBarIcon: ({ color }) => (
             <MaterialCommunityIcons name="plus-circle" color={color} size={26} />
           ),
         }}/>
         <Tab.Screen name ="opportunities" component={OpportunityScreen} options={{
           tabBarLabel: 'Opportunity',
-          tabBarColor:'black',
+          tabBarColor:"#ffbf00",
           tabBarIcon: ({ color }) => (
             <MaterialCommunityIcons name="chart-line-variant" color={color} size={26} />
           ),
@@ -81,7 +81,7 @@ function BottomStackSection(){
             return(
               <Tab.Screen name ="mybusiness" component={MyBusinessScreen} options={{
                 tabBarLabel: 'My Business',
-                tabBarColor:'gray',
+                tabBarColor:"#eb7434",
                 tabBarIcon: ({ color }) => (
                   <MaterialCommunityIcons name="chart-pie" color={color} size={26} />
                 ),

@@ -196,7 +196,7 @@ const styles = StyleSheet.create({
         backgroundColor:'white'
     },
     profileContainer:{
-        backgroundColor:'black'
+        backgroundColor:'#eb7434'
     
         
     },
@@ -217,7 +217,7 @@ const styles = StyleSheet.create({
 
         paddingTop: 30,
         paddingLeft: 100,
-        backgroundColor:'black',
+        backgroundColor:'#eb7434',
         justifyContent:'center',
         
     },
@@ -230,7 +230,6 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         color:'white',
         fontFamily:'Georgia, serif',
-        backgroundColor:'black',
         fontSize: 20,
     },
     caption:{

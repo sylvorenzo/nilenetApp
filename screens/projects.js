@@ -99,13 +99,16 @@ class ProjectScreen extends Component{
       const {navigate } = this.props.navigation;
         return(
             <View>
-                <StatusBar backgroundColor="gray"/>
+                <StatusBar backgroundColor="#eb7434"/>
+                <View style={{backgroundColor:'#eb7434', height:100, borderBottomRightRadius:25,}}>
                 <TextInput
                     style={styles.searchBar}
                     placeholder="Search..." 
                     value={this.state.search}
                     onChangeText={(e)=> this.setState({search:e})}
                 />
+                </View>
+
                 <ScrollView>
                   {
                   this.state.Posts.map(items=>{
@@ -394,10 +397,10 @@ const styles = StyleSheet.create({
           marginTop: 20,
           margin:10,
           borderRadius:25,
-          borderColor: 'gray',
+          borderColor: 'white',
           height:50,
           borderWidth: 1,
           padding: 12,
-          backgroundColor: 'gray'
+          backgroundColor: 'white'
       }
   })

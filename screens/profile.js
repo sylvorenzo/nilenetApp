@@ -85,7 +85,7 @@ class ProfileScreen extends Component{
     render(){
         return(
             <View>
-                <StatusBar backgroundColor="gray"/>
+                <StatusBar backgroundColor="#eb7434"/>
                 <View>
                 {this.state.items.map(item=>{
                     console.log(item)
@@ -192,7 +192,7 @@ const styles = StyleSheet.create({
         backgroundColor:'white'
     },
     profileContainer:{
-        backgroundColor:'black'
+        backgroundColor:"#eb7434"
     
         
     },
@@ -213,8 +213,9 @@ const styles = StyleSheet.create({
 
         paddingTop: 30,
         paddingLeft: 100,
-        backgroundColor:'black',
+        backgroundColor:"#eb7434",
         justifyContent:'center',
+        
         
     },
     title:{
@@ -226,7 +227,6 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         color:'white',
         fontFamily:'Georgia, serif',
-        backgroundColor:'black',
         fontSize: 20,
     },
     caption:{

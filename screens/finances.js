@@ -19,7 +19,7 @@ class FinanceScreen extends Component{
     render(){
         return(
             <ScrollView>
-                <StatusBar backgroundColor="gray"/>
+                <StatusBar backgroundColor='#07adb3'/>
                 <Card style={styles.card}>
                     <Text style={styles.title}>Financing For Start-Up's:</Text>
                     <Text style={styles.content}>

@@ -13,7 +13,7 @@ class ResourcesScreen extends Component{
     render(){
         return(
             <ScrollView>
-                <StatusBar backgroundColor="black"/>
+                <StatusBar backgroundColor='#07adb3'/>
                 <Touch onPress={()=> this.props.navigation.navigate('finances')}>
                     <Card style={styles.card}>
                         <Title style={styles.title}>Finances</Title>

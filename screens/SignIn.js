@@ -3,6 +3,7 @@ import React,{useState}from 'react';
 import { StyleSheet,ScrollView,StatusBar,ImageBackground,Alert, Text, View,TextInput,TouchableOpacity as Touch,Image, Platform} from 'react-native';
 import background from '../assets/launch_screen.jpg';
 import auth from '@react-native-firebase/auth';
+import{BlurView} from '@react-native-community/blur';
 import {AuthContext} from '../components/context';
 
 function SignInScreen({navigation}){
@@ -48,12 +49,17 @@ function SignInScreen({navigation}){
     
     return(
     <ScrollView>
-        <StatusBar backgroundColor="#e3e3e3"/>
-        <ImageBackground source={background} style={{flex:1, height:730}}>
-        <View style={styles.first}>
+        <StatusBar backgroundColor="#e0e0e0"/>
+        <ImageBackground source={background} style={{width:'100%',height:800}}>
+        <View style={styles.header}>
             <Text style={styles.text_header}>Welcome!</Text>
         </View>
-        <View style={styles.footer}>
+        <BlurView
+        blurType='light'
+        style={styles.blurContainer}
+        > 
+       <View style={styles.inputContainer}>
+
             <Text style={styles.text_footer}>Email</Text>
             <View style={styles.action}>
        
@@ -103,19 +109,44 @@ function SignInScreen({navigation}){
                 </Touch>
                 
             </View>
+            
         </View>
-
-
+        
+        </BlurView>
         </ImageBackground>
+        
 
     </ScrollView>
     )
 }
 const styles = StyleSheet.create({
-    main:{
+    blurContainer:{
+        marginTop:100,
+        margin:10,
+        height:500,
+        borderRadius:25
+    },
+    inputContainer:{
         
+        margin:10,
+        borderRadius:25,
+        padding:10,
+        width: 320,
+        height:500,
+        position:'relative',
+        borderColor: 'white',
+        borderWidth:0.5,
+        marginTop: 100,
+        shadowRadius: 15,
+
         
-        
+    },
+    header:{
+        height:300,
+        position:'absolute',
+        width:'100%',
+      
+        borderBottomLeftRadius: 25
     },
     first:{
         
@@ -137,7 +168,8 @@ const styles = StyleSheet.create({
     },
     text_header:{
         
-        
+        marginTop:10,
+        padding:5,
         fontWeight:'bold',
         fontSize:30,
         color:'black'
@@ -167,6 +199,7 @@ const styles = StyleSheet.create({
         color: 'black',
         borderWidth: 1,
         borderRadius: 25,
+        borderColor:'black'
     
 
     },

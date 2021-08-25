@@ -11,7 +11,7 @@ function OpportunityScreen({navigation}){
 
     return(
         <View>
-            <StatusBar backgroundColor="gray"/>
+            <StatusBar backgroundColor="#eb7434"/>
             <View style={styles.contentContainer}>
                 <Text style={styles.heading}>Opportunities</Text>
                 <Text style={styles.content}>

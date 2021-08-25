@@ -296,13 +296,25 @@ componentDidMount(){
              RivalsweightR = 0;
              EmployeesWeightR = 0;
         }
+         
+         
+        database().ref(`stats/${auth().currentUser.uid}`).set({
+            
+            Experience: managementExperience,
+            Capital: capitalAmount,
+            Milestones:milestones,
+            Competitors: competitors,
+            Employees: employees,
+            uid: auth().currentUser.uid,
+
+        })
             
     }
     
       render(){
         return(
             <View style={{backgroundColor:'#f0f8fa'}}>
-                <StatusBar backgroundColor="gray"/>
+                <StatusBar backgroundColor="#eb7434"/>
                 <ScrollView>
                     <View style={styles.chart}>
              
@@ -483,9 +495,7 @@ componentDidMount(){
 
                             </View>
                             <View style={styles.generateContainer}>
-                                <Touch>
-                                    <Text style={styles.questionSave}>Save Answers</Text>
-                                </Touch>
+            
                             <Touch onPress ={()=> this.handleBrain(this.state.managementExperience, this.state.financialBackground, this.state.TotalcapitalAmount, this.state.numberofMilestones, this.state.numberOfCompetitors,this.state.numberofEmployees)}>
                                 <Text style={styles.generatorBtn}>Generate Report</Text>   
                             </Touch>
@@ -637,7 +647,7 @@ const styles = StyleSheet.create({
         padding: 10,
         textAlign:'center',
         borderRadius:10,
-        backgroundColor:'#edd09a',
+        backgroundColor:'#ffbf00',
     },
     questionsTxt:{
         fontFamily:'Georgia, Serif',

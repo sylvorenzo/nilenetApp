@@ -20,6 +20,8 @@ target 'nilenetApp' do
 
 
 
+  pod 'react-native-blur', :path => '../node_modules/@react-native-community/blur'
+
   target 'nilenetAppTests' do
     inherit! :complete
     # Pods for testing
