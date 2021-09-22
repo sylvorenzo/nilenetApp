@@ -16,7 +16,7 @@ import { BlurView } from '@react-native-community/blur';
 
 
 function SignUpScreen({navigation}){
-    
+    // values created to get user input.
     const [username, setUsername] = useState('');
     const [surname, setSurname] = useState('');
     const [email, setEmail] = useState('');
@@ -25,7 +25,8 @@ function SignUpScreen({navigation}){
     const [type, setType] =useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword,setConfimPassword] = useState('');
- 
+   
+    // sign up function called from App.js
     const {signUp} = React.useContext(AuthContext);
 
 
@@ -96,7 +97,8 @@ function SignUpScreen({navigation}){
                     <Picker.Item label="Tourism" value="tourism"/>
                     <Picker.Item label = "Manufacturing"  value = "manufacturing"/>
                     <Picker.Item label = "Finances"  value = "finances"/>
-                    <Picker.Item label = "Agriculture"  value = "Agriculture"/>
+                    <Picker.Item label = "Agriculture"  value = "agriculture"/>
+                    <Picker.Item label = "Other"  value = "other"/>
                 </Picker>
             </View>
             <Text style={styles.text_footer}></Text>
@@ -215,7 +217,7 @@ const styles = StyleSheet.create({
         flex:1,
         marginTop: Platform.OS ==='ios' ? 0:-12,
         paddingLeft:10,
-        color: 'white',
+        color: 'black',
         borderWidth: 1,
         borderRadius: 25,
         borderColor:'black'

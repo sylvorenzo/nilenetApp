@@ -1,14 +1,11 @@
-import React, {useState,useCallback,useEffect} from 'react';
-import {Alert ,ActivityIndicator,View,Text,StatusBar ,ImageBackground,StyleSheet, ScrollView,TextInput, TouchableOpacity as Touch} from 'react-native';
+import React, {useState,useEffect} from 'react';
+import {ActivityIndicator,View,Text,StatusBar ,ImageBackground,StyleSheet, ScrollView,TextInput, TouchableOpacity as Touch} from 'react-native';
 import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth';
-import PushNotification from "react-native-push-notification";
-import messaging from '@react-native-firebase/messaging';
-import io from "socket.io-client";
-import { GiftedChat } from 'react-native-gifted-chat';
 import background from '../assets/launch_screen.jpg';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
+// this is the page where the one-to-one chat occurs between users.
 import {
     Avatar,
     Title,
@@ -19,31 +16,25 @@ import {
 
 
 function ChatScreen({route}){
-  
+  // this is where the parsed user id is stored.
   const parsedUser = route.params.paramkey;
-  const [isLoading, setIsLoading] = useState(true);
+  
+  const [isLoading, setIsLoading] = useState(true); // this is the constant used to control the activity indicator.
+    const  messageArray =[]; // the data is retrieved and stored in this array.
+    const [token,setToken] = useState(''); // this is where the token is stored and used for cloud messaging.
+    const [username, setUsername] = useState(''); // the username which is retrieved from database is stored in this state.
+    const [surname, setSurname] = useState(''); // the surname which is retrieved from database is stored in this state.
 
-    
-    const  messageArray =[];
-    const [token,setToken] = useState('');
-    const [username, setUsername] = useState('')
-    const [surname, setSurname] = useState('');
-
-    const[messages,setMessages] =useState([]);
-    const[users,setUsers] = useState([]);
+    const[messages,setMessages] =useState([]);// used to store data from database
+   var [users,setUsers] = useState([]);// used to store data from database
     const [items, setItems]= useState({
-      message:'',
+      message:'', // used to store user input.
       
 
     })
 
- 
-   
-
-
-
-
   useEffect(()=>{
+    //Activity Indicator controller logic
     if(messages === null){
                
               
@@ -51,6 +42,7 @@ function ChatScreen({route}){
     }else if(messages != null){
       setIsLoading(false);
     }
+    // retrieves parsed user data from database.
     database().ref(`users/${parsedUser}`).once('value', snapshot =>{
       if(snapshot.exists()){
            const Items = snapshot.val();
@@ -68,17 +60,20 @@ function ChatScreen({route}){
                   
                        
                });
-
-               setUsers(newItems);
+               // stores data in users variable.
+               setUsers(users = newItems);
        
            }
           
       }
 
   });
+
+  //gets the current users data from database.
   database().ref(`users/${auth().currentUser.uid}`).once('value', snapshot =>{
     if(snapshot.exists()){
          const Items = snapshot.val();
+
          setUsername(Items.username);
          setSurname(Items.surname);
          
@@ -88,6 +83,8 @@ function ChatScreen({route}){
     }
 
 });
+
+// gets parsed users token so that it may be used for cloud messaging.
 database().ref(`mykey/${parsedUser}`).once('value', snap=>{
   if(snap.exists()){
     setToken(snap.val().token);
@@ -97,11 +94,12 @@ database().ref(`mykey/${parsedUser}`).once('value', snap=>{
       // retrieves chat information and stores it into a state variable.
       database().ref(`chats/${auth().currentUser.uid + parsedUser}/`).on('value', childshot=>{
         if(childshot.exists()){
+          // gets database keys
           const keys = Object.keys(childshot.val());
-        
+          
           keys.sort();
           for(let x = 0; x < keys.length;x++){
-            
+            // use keys to gain access to the unique session
             database().ref(`chats/${auth().currentUser.uid + parsedUser}/${keys[x]}`).on('value', snap=>{
               if(snap.exists()){
                 
@@ -138,22 +136,19 @@ database().ref(`mykey/${parsedUser}`).once('value', snap=>{
   },[])
  
   
-
- const handleMessage = (e,parsedUid)=>{
+// handles message send functionality
+ const handleMessage = ()=>{
     const CurrentUid = auth().currentUser.uid;
         
     const sessionId = CurrentUid + parsedUser;
     const alternateSessionId = parsedUser + CurrentUid;
   
-     console.log("session id: ", sessionId)
-     
-    
-  
+    // these three variables are used to create the time in a specific format.
     var messageId = Date.now();
     var today = new Date();
     var time = today.getHours() + ':' + ((today.getMinutes() < 10 ? '0': '') + today.getMinutes());
   
-  
+  // saves data to database
     database().ref(`chats/${sessionId}/${messageId}`).set({
         messageId: messageId,
         chatUid: sessionId,
@@ -161,6 +156,7 @@ database().ref(`mykey/${parsedUser}`).once('value', snap=>{
         time: time,
         uid: CurrentUid
     })
+    // saves data to database for the other user
     database().ref(`chats/${alternateSessionId}/${messageId}`).set({
         messageId: messageId,
         chatUid: sessionId,
@@ -168,12 +164,8 @@ database().ref(`mykey/${parsedUser}`).once('value', snap=>{
         time: time,
         uid: CurrentUid
     })
-    database().ref(`messageInstance/${auth().currentUser.uid}`).set({
-        token: token,
-        title: `${username} ${surname}`,
-        body:items.message
-    });
-
+   
+    // uses the api the send the cloud message.
     fetch('https://us-central1-nilenet-c9b39.cloudfunctions.net/user', {
       method: 'POST',
       headers: {
@@ -183,13 +175,14 @@ database().ref(`mykey/${parsedUser}`).once('value', snap=>{
       body: JSON.stringify({
         tokens: [token],
         notification:{
-          title: username,
+          title: username ,
           body:items.message
         }
 
 
       })
     });
+    // clears message once it has been sent.
    setItems({message:''});
 
    
@@ -202,7 +195,7 @@ database().ref(`mykey/${parsedUser}`).once('value', snap=>{
       <View>
         
         <View>
-          <StatusBar backgroundColor="#07adb3"/>
+          <StatusBar backgroundColor="#f85900"/>
         <ImageBackground source={background} style={{height:675}}>
           {users.map(item=>{
            
@@ -229,7 +222,7 @@ database().ref(`mykey/${parsedUser}`).once('value', snap=>{
               <ActivityIndicator size="large" color="orange"/>
             ):(
               messages.map(item=>{
-                console.log(item);
+                
                 if(item.chatUid === (auth().currentUser.uid + route.params.paramkey)){
                   if(item.uid === auth().currentUser.uid){
                     return(
@@ -299,6 +292,8 @@ database().ref(`mykey/${parsedUser}`).once('value', snap=>{
   )
 }
 export default ChatScreen;
+
+// styles constant for this specific page.
 const styles = StyleSheet.create({
   textInput:{
     
@@ -307,8 +302,8 @@ const styles = StyleSheet.create({
     color: 'black',
     borderWidth: 1,
     width:300,
-    
-    
+    borderColor:'orange',
+    backgroundColor:'white',
     borderRadius: 25,
     
     

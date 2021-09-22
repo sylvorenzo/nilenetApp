@@ -21,6 +21,7 @@ import {Picker} from '@react-native-picker/picker';
 
 
 
+
 class PostScreen extends Component{
 
     constructor(props) {
@@ -42,7 +43,7 @@ class PostScreen extends Component{
       }
     
       componentDidMount(){
-      
+      // retrieves current user data from database
         database().ref(`users/${auth().currentUser.uid}`).on('value', snapshot =>{
             if(snapshot.exists()){
                  let Items = snapshot.val();
@@ -68,7 +69,7 @@ class PostScreen extends Component{
         
       }
 
-      
+    // opens gallery      
      async handleImage(){
         if (Platform.OS === 'android') {
             const result = await PermissionsAndroid.request(
@@ -110,16 +111,15 @@ class PostScreen extends Component{
         });
         this.refRBSheet.current.close()
     
-        
-        console.log('image selected: ',this.state.selected);
       };
 
+
+      // handles post functionality
      async handlePost(){
           var uri = this.state.selected;
           const filename = uri.substring(uri.lastIndexOf('/') + 1);
         
-           console.log(filename);
-         
+          
           const uploadUri =  uri.replace('file://','');
 
           const task = storage().ref("images/"+ filename).putFile(uploadUri);
@@ -133,17 +133,13 @@ class PostScreen extends Component{
           //gets url of image
             storage().ref("images").child(filename).getDownloadURL().then(url =>{
                 const current = auth().currentUser;
-            
-                
-                console.log(url);
-                this.setState({url:url});
-                
-                
-        
+      
+                this.setState({url:url});          
               if(current != null){
-                //stores information in database
+                
                 this.state.userInfo.map(item=>{
                     var newPostKey = Date.now();
+                    //stores data in database
                     database().ref(`posts/entrepreneurs/${current.uid}/${newPostKey}`).set({
                         id: newPostKey,
                         projectImage: this.state.url,
@@ -160,7 +156,7 @@ class PostScreen extends Component{
                         Alert.alert('Upload Complete!',
                         'Your Post has Successfully been Uploaded!')
                       });
-          
+                      // savaes data to the public posts of the database.
                       database().ref(`public/posts/${newPostKey}`).set({
                         id: newPostKey,
                         projectImage: this.state.url,
@@ -175,9 +171,6 @@ class PostScreen extends Component{
                         sector:item.sector
                       })
                 })
-                
-            
-    
               }
             });
             
@@ -187,7 +180,7 @@ class PostScreen extends Component{
     
     render(){
         return(
-            <ScrollView style={{backgroundColor:"#eb7434"}}>
+            <ScrollView style={{backgroundColor:"#ede9e8"}}>
                 <View style={styles.imageSection}>
                 <Card style={styles.card}>
                     <Card.Cover
@@ -255,21 +248,20 @@ class PostScreen extends Component{
                     <View style={{flexDirection:'row',flexWrap:'wrap', justifyContent:'center'}}>
                     {this.state.images.map(image=>{
                      return(
-                         <TouchableHighlight onPress={()=> this.getSelectedImages(image.uri)}>
-                             <Image style={{
-                                 width:100,
-                                 height:100,
-                                 margin:2
-                             }}
-                             source={{uri: image.uri}}
-                             />
-                         </TouchableHighlight>
+                        <TouchableHighlight onPress={()=> this.getSelectedImages(image.uri)}>
+                          <Image style={{
+                             width:100,
+                             height:100,
+                             margin:2
+                           }}
+                            source={{uri: image.uri}}
+                          />
+                       </TouchableHighlight>
                      )
-                 })}
+                    })}
                     </View>
-
-                </ScrollView>
-                    </RBSheet>
+                    </ScrollView>
+                  </RBSheet>
             </ScrollView>
         )
     }

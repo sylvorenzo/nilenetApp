@@ -9,19 +9,19 @@ import {
 
 
 class ResourcesScreen extends Component{
-
+    // this is the page where all the resources categories are displayed.
     render(){
         return(
             <ScrollView>
-                <StatusBar backgroundColor='#07adb3'/>
+                <StatusBar backgroundColor='#f85900'/>
                 <Touch onPress={()=> this.props.navigation.navigate('finances')}>
                     <Card style={styles.card}>
                         <Title style={styles.title}>Finances</Title>
                     </Card>
                 </Touch>
-                <Touch onPress={()=> this.props.navigation.navigate('documents')}>
+                <Touch onPress={()=> this.props.navigation.navigate('copyrights')}>
                     <Card style={styles.card}>
-                        <Title style={styles.title}>Required Documentation</Title>
+                        <Title style={styles.title}>Copyrights and Intellectual Property</Title>
                     </Card>
                 </Touch>
                 <Touch onPress={()=> this.props.navigation.navigate('business')}>

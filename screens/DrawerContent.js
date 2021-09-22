@@ -1,6 +1,6 @@
 import React,{useContext, useEffect, useState} from 'react';
 import {View, StyleSheet, StatusBar} from 'react-native';
-import {DrawerContentScrollView, DrawerItem} from '@react-navigation/drawer';
+import {DrawerContentScrollView} from '@react-navigation/drawer';
 import {
   Avatar,
   Title,
@@ -14,12 +14,10 @@ import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth';
 
 export function DrawerContent(props){
-    // create state variables.
+    // create state variable.
     var [items, setItems] = useState([]);
-    var [type, setType] = useState('entrepreneur');
-    var [typeReader, setTypeReader] = useState('');
     useEffect(()=>{
-
+        // retrieves current users data from database.
         database().ref(`users/${auth().currentUser.uid}`).on('value', snapshot =>{
             if(snapshot.exists()){
                  let Items = snapshot.val();
@@ -43,19 +41,20 @@ export function DrawerContent(props){
  
         });
 
-    },[])
+    },[]);
+    // retrieves signout function from App.js
     const {signOut} = useContext(AuthContext);
     return(
         <View style={{flex:1}}>
            <DrawerContentScrollView {...props} style={styles.Parent}>
-               <StatusBar backgroundColor="#eb7434"/>
+               <StatusBar backgroundColor="#f85900"/>
                 
                     <View style={styles.userInfoSection}>
                         
                             {items.map(item=>{
                             
                                 return(
-                                    <View style={{paddingTop:10,position:'absolute', backgroundColor:'#eb7434',  width:300, }}>
+                                    <View style={{paddingTop:10,position:'absolute', backgroundColor:'#f85900',  width:300, }}>
                                     <Avatar.Image
                                     style={{marginLeft:100,}}
                                     source={{
@@ -77,7 +76,7 @@ export function DrawerContent(props){
                 </View>
                 <Drawer.Section style={styles.drawerSection}>
                     <Drawer.Item
-                            icon={({color,size}) => (
+                            icon={({size}) => (
                             <MaterialCommunityIcons
                                 name='account-outline'
                                 color='white'
@@ -87,7 +86,7 @@ export function DrawerContent(props){
                             onPress={()=>{props.navigation.navigate('Profile')}}
                         />
                         <Drawer.Item
-                            icon={({color,size}) => (
+                            icon={({size}) => (
                             <MaterialCommunityIcons
                                 name='book-multiple-outline'
                                 color='white'
@@ -97,7 +96,7 @@ export function DrawerContent(props){
                             onPress={()=>{props.navigation.navigate('Resources')}}
                         />
                         <Drawer.Item
-                            icon={({color,size}) => (
+                            icon={({size}) => (
                             <MaterialCommunityIcons
                                 name='account-group-outline'
                                 color='white'
@@ -167,7 +166,7 @@ const styles = StyleSheet.create({
 
     },
     drawerSection:{
-        backgroundColor:'#eb7434',
+        backgroundColor:'#f85900',
         marginTop:120,
         borderBottomLeftRadius:25,
         

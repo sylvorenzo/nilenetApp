@@ -15,7 +15,7 @@ import RBSheet from "react-native-raw-bottom-sheet";
 import {Picker} from '@react-native-picker/picker';
 
 class EditProfileScreen extends Component{
-
+  // object that handles the profile edit screen
     constructor(props) {
         super(props);
         this.refRBSheet = React.createRef();
@@ -38,6 +38,7 @@ class EditProfileScreen extends Component{
     }
 
     componentDidMount(){
+      // retrieves current users data from database.
         database().ref(`users/${auth().currentUser.uid}`).on('value', snapshot =>{
             if(snapshot.exists()){
                  let Items = snapshot.val();
@@ -61,7 +62,10 @@ class EditProfileScreen extends Component{
  
         });
     }
+
+    // photo retriever function
     async PhotoHandler(){
+      // checks for permissions
         if (Platform.OS === 'android') {
             const result = await PermissionsAndroid.request(
               PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
@@ -75,7 +79,7 @@ class EditProfileScreen extends Component{
               return;
             }
           }
-    
+          // gets first 500 pictures from cameraroll
           CameraRoll.getPhotos({
             first: 500,
             assetType: 'Photos',
@@ -102,14 +106,12 @@ class EditProfileScreen extends Component{
         });
         this.refRBSheet.current.close()
     
-        
-        console.log('image selected: ',this.state.selected);
       };
+
+      // handles post functionality 
       async handlePost(){
         var uri = this.state.selected;
         const filename = uri.substring(uri.lastIndexOf('/') + 1);
-      
-         console.log(filename);
        
         const uploadUri =  uri.replace('file://','');
 
@@ -123,10 +125,9 @@ class EditProfileScreen extends Component{
       },()=>{
         //gets url of image
           storage().ref("images").child(filename).getDownloadURL().then(url =>{
-              const current = auth().currentUser;
+             
           
-              
-              console.log(url);
+            
               this.setState({url:url});
               
               
@@ -164,7 +165,7 @@ class EditProfileScreen extends Component{
 
     render(){
         return(
-            <ScrollView style={{backgroundColor:'gray'}}>
+            <ScrollView style={{backgroundColor:'#ede9e8'}}>
                 <View style={styles.imageSection}>
                 <Card style={styles.card}>
                     <Card.Cover
@@ -192,10 +193,12 @@ class EditProfileScreen extends Component{
                 autoCapitalize="none"
                 onValueChange={(itemValue)=>this.setState({sector:itemValue})}
                 >
+                    <Picker.Item label="Select a Sector" value=""/>
                     <Picker.Item label="Tourism" value="tourism"/>
                     <Picker.Item label = "Manufacturing"  value = "manufacturing"/>
                     <Picker.Item label = "Finances"  value = "finances"/>
-                    <Picker.Item label = "Agriculture"  value = "Agriculture"/>
+                    <Picker.Item label = "Agriculture"  value = "agriculture"/>
+                    <Picker.Item label = "Other"  value = "other"/>
                 </Picker>
                 <TextInput
                 style={styles.textInput}
@@ -283,7 +286,7 @@ const styles = StyleSheet.create({
     },
     descriptionSection:{
         height:355,
-        backgroundColor:'gray',
+        backgroundColor:'white',
         margin:10,
         borderTopRightRadius:25,
     },

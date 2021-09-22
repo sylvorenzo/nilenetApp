@@ -3,7 +3,8 @@ import {View,Text,StatusBar,StyleSheet,ScrollView, TouchableOpacity, ImageBackgr
 import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth';
 import { Avatar } from 'react-native-paper';
-import background from '../assets/background.png';
+import background from '../assets/launch_screen.jpg';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 class ContactsScreen extends Component{
 
@@ -27,7 +28,8 @@ class ContactsScreen extends Component{
             if(snapshot.exists()){
 
                 var extensionArray = [];
-                
+
+                // gets values from the database and loops through it.
                 Object.values(snapshot.val()).forEach(item=>{
                     let contactItems = [];
 
@@ -43,10 +45,15 @@ class ContactsScreen extends Component{
             }
         })
     }
+
+    // function for removing a contact from contact list
+    removeContact(uid){
+        database().ref(`contacts/${auth().currentUser.uid}/${uid}`).remove();
+    }
     render(){
         return(
             <ScrollView>
-                <StatusBar backgroundColor="gray"/>
+                <StatusBar backgroundColor="#f85900"/>
                 <ImageBackground source={background} style={{flex:1, minHeight:800, paddingTop:10}}>
             
                 {this.state.contacts.map(contact =>contact.map(item=>{
@@ -54,18 +61,28 @@ class ContactsScreen extends Component{
                     return(
                         
                         <View style={styles.contactContainer}>
-                        <StatusBar backgroundColor="gray"/>
-
-                        <TouchableOpacity>
+                        
+                        <TouchableOpacity onPress={()=>this.props.navigation.navigate('userView', {paramkey:item.uid})}>
                             <Avatar.Image 
                             size={50}
                             source={{uri: item.profileImage}}/>
                         </TouchableOpacity>
-
+                        <View style={{width:200}}>
                         <TouchableOpacity onPress={()=>this.props.navigation.navigate("Chat", {paramkey:item.uid})}>
                             <Text style={styles.contactTxt}>{item.username}</Text>
                         </TouchableOpacity>
+                        </View>
 
+                        <View style={{paddingLeft:50}}>
+                        <TouchableOpacity onPress={()=>this.removeContact(item.uid)}>
+                            <MaterialCommunityIcons
+                                name="trash-can-outline"
+                                size={30}
+                                color='white'
+                                
+                            />
+                        </TouchableOpacity>
+                        </View>
                         </View>
                       
 
@@ -90,10 +107,11 @@ const styles = StyleSheet.create({
     },
     contactContainer:{
         padding:10,
-        margin:0.1,
+        margin:1,
         flexDirection:'row',
-        backgroundColor: 'orange',
-        borderColor:'white',
+        backgroundColor: '#f85900',
+        borderColor:'#f85900',
+        borderRadius:10,
         borderWidth:1,
     
     }

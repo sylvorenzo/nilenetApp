@@ -5,6 +5,7 @@ import {StyleSheet,View,Text,StatusBar,ScrollView, TouchableOpacity as Touch} fr
 
 
 class TermsScreen extends Component{
+    // content for the terms and conditions
     constructor(props){
         super(props);
     }

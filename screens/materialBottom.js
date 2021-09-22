@@ -2,7 +2,6 @@ import React, { useEffect,useState   } from 'react';
 import FeedScreen from './feed';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import HomeScreen from './home';
 import PostScreen from './post';
 import MyBusinessScreen from './mybusiness';
 import OpportunityScreen from './opportunity';
@@ -12,11 +11,12 @@ import auth from '@react-native-firebase/auth';
 
 const Tab = createMaterialBottomTabNavigator();
 function BottomStackSection(){
-
+  // const created to store database data
   const [items,setItems] = useState([])
 
   useEffect(()=>{
 
+    // retrieves type from database
     database().ref(`users/${auth().currentUser.uid}`).on('value', snapshot =>{
       if(snapshot.exists()){
            let Items = snapshot.val();
@@ -24,13 +24,7 @@ function BottomStackSection(){
            for(let x = 0; x< 1; x++){
            
                newItems.push({
-                   username: Items.username,
-                   surname:Items.surname,
-                   companyName: Items.companyName,
-                   profileImage: Items.profileImage,
-                   sector: Items.sector,
-                   type:Items.type
-                       
+                type:Items.type     
                });
        
            }
@@ -55,7 +49,7 @@ function BottomStackSection(){
         }}/>
         <Tab.Screen name="Feed" component={FeedScreen} options={{
           tabBarLabel: 'Feed',
-          tabBarColor:"#ffbf00",
+          tabBarColor:"#f85900",
           tabBarIcon: ({ color }) => (
             <MaterialCommunityIcons name="post-outline" color={color} size={26} />
           ),
@@ -69,7 +63,7 @@ function BottomStackSection(){
         }}/>
         <Tab.Screen name ="opportunities" component={OpportunityScreen} options={{
           tabBarLabel: 'Opportunity',
-          tabBarColor:"#ffbf00",
+          tabBarColor:"#f85900",
           tabBarIcon: ({ color }) => (
             <MaterialCommunityIcons name="chart-line-variant" color={color} size={26} />
           ),
@@ -80,7 +74,7 @@ function BottomStackSection(){
           if(item.type === 'Entrepreneur'){
             return(
               <Tab.Screen name ="mybusiness" component={MyBusinessScreen} options={{
-                tabBarLabel: 'My Business',
+                tabBarLabel: 'Statistics',
                 tabBarColor:"#eb7434",
                 tabBarIcon: ({ color }) => (
                   <MaterialCommunityIcons name="chart-pie" color={color} size={26} />

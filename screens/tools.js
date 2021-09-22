@@ -1,10 +1,8 @@
 import React, {Component} from 'react'
 import { ScrollView, StatusBar, Text , StyleSheet} from 'react-native'
-import {
-    
-    Card,
-  } from 'react-native-paper';
+import {Card} from 'react-native-paper';
 
+// tools for success content
 class ToolScreen extends Component{
     constructor(props){
         super(props);
@@ -16,7 +14,7 @@ class ToolScreen extends Component{
     render(){
         return(
             <ScrollView>
-                <StatusBar backgroundColor="#eb7434"/>
+                <StatusBar backgroundColor="#f85900"/>
                 <Card style={styles.card}>
                     <Text style={styles.title}>1.Slack</Text>
                     <Text style={styles.content}>

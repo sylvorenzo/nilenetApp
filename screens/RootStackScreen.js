@@ -6,9 +6,8 @@ import SignInScreen from './SignIn';
 
 const RootStack = createStackNavigator();
 
-const RootStackScreen=({navigation})=>{
-
-
+const RootStackScreen=()=>{
+// this is the pages that is being displayed before authentication
 
     return(
     <RootStack.Navigator initialRouteName="Terms Of Use" headerMode="none">

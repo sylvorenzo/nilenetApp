@@ -1,14 +1,9 @@
 import React, {Component} from 'react';
 import { ScrollView, Text, StyleSheet,Linking, TouchableOpacity as Touch, StatusBar} from 'react-native';
-import {
-    Avatar,
-    Title,
-    Caption,
-    Card,
-  } from 'react-native-paper';
+import {Card} from 'react-native-paper';
 
 class FinanceScreen extends Component{
-
+    // this is the screen where finances content is displayed.
     constructor(props){
         super(props);
         this.state ={
@@ -19,7 +14,7 @@ class FinanceScreen extends Component{
     render(){
         return(
             <ScrollView>
-                <StatusBar backgroundColor='#07adb3'/>
+                <StatusBar backgroundColor='#f85900'/>
                 <Card style={styles.card}>
                     <Text style={styles.title}>Financing For Start-Up's:</Text>
                     <Text style={styles.content}>

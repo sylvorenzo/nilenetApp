@@ -30,6 +30,7 @@ class ProfileScreen extends Component{
 
 
     componentDidMount(){
+        // retrieves data from user database.
         database().ref(`users/${auth().currentUser.uid}`).on('value', snapshot =>{
             if(snapshot.exists()){
                  let Items = snapshot.val();
@@ -79,13 +80,12 @@ class ProfileScreen extends Component{
             });                
         }
     })
-    console.log(this.state.Posts);
     }
 
     render(){
         return(
             <View>
-                <StatusBar backgroundColor="#eb7434"/>
+                <StatusBar backgroundColor="#f85900"/>
                 <View>
                 {this.state.items.map(item=>{
                     console.log(item)
@@ -95,12 +95,12 @@ class ProfileScreen extends Component{
                             <View style={styles.profileSection}>
                 
                                 <Avatar.Image
-                                style={{borderWidth: 1,
-                                    borderColor:'white'}}
-                                source={{
-                                uri:item.profileImage
-                            }}
-                                size={150}
+                                    style={{borderWidth: 1,
+                                        borderColor:'white'}}
+                                    source={{
+                                    uri:item.profileImage
+                                        }}
+                                    size={150}
                                 />
                             <Title style={styles.title}>{item.username} {item.surname}</Title>
                            
@@ -123,7 +123,7 @@ class ProfileScreen extends Component{
                                     <View style={{flexDirection:'row',flexWrap:'wrap'}}>
                                     {
                                         this.state.Posts.map(item=>{
-                                            console.log(item.projectImage)
+                                            
                                             return(
                                              
                                                 <Touch onPress={()=>this.props.navigation.navigate('posts', {paramkey: auth().currentUser.uid})}>
@@ -138,10 +138,6 @@ class ProfileScreen extends Component{
                                                 
 
                                             </Touch>
-                                              
-
-                                              
-                                              
                                             )
                                         })
                                     }

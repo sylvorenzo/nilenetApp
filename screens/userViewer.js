@@ -2,13 +2,7 @@ import React,{useEffect,useState} from 'react';
 import {Text, View, StyleSheet,ScrollView, TouchableOpacity as Touch,Image } from 'react-native';
 import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth';
-import {
-    Avatar,
-    Title,
-    Caption,
-    Card,
-   
-  } from 'react-native-paper';
+import {Avatar,Title} from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 
 function userViewerScreen({route}){
@@ -30,6 +24,7 @@ function userViewerScreen({route}){
                          companyName: Items.companyName,
                          profileImage: Items.profileImage,
                          sector: Items.sector,
+                         uid: route.params.paramkey,
                          type:Items.type
                              
                      });
@@ -41,14 +36,14 @@ function userViewerScreen({route}){
         });
 
             //gets user posts from database and stores it in a variable
-    database().ref(`posts/entrepreneurs/${auth().currentUser.uid}`).orderByValue().on('value',snapshot=>{
+    database().ref(`posts/entrepreneurs/${route.params.paramkey}`).orderByValue().on('value',snapshot=>{
             
         if(snapshot.exists()){
             let projectId = Object.values(snapshot.val());  
             let newPosts = [];
             var extensionArray =[];
 
-            let projectChildren = Object.values(projectId).forEach(childsnapshot =>{
+            Object.values(projectId).forEach(childsnapshot =>{
        
               
                   newPosts.push({

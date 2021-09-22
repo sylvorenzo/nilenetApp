@@ -1,12 +1,5 @@
-import React,{useEffect, useState, useRef, Component} from 'react';
-import {View, 
-    Text, 
-    ScrollView,
-    StyleSheet,
-    TouchableOpacity as Touch,
-    Alert,
-    TextInput,
-    StatusBar} from 'react-native';
+import React,{ Component} from 'react';
+import {View, Text, ScrollView,StyleSheet,TouchableOpacity as Touch,Alert,TextInput,StatusBar} from 'react-native';
 import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth';
 import {PieChart} from 'react-native-chart-kit';
@@ -16,10 +9,10 @@ import {Picker} from '@react-native-picker/picker';
 
 
 class MyBusinessScreen extends Component{
-
+// this the statistics page
    constructor(props){
        super(props);
-            this.refRBSheet = React.createRef();
+        this.refRBSheet = React.createRef();
        this.state = {
         numberofEmployees:0,
         numberofMilestones: 0,
@@ -49,34 +42,29 @@ class MyBusinessScreen extends Component{
 
 componentDidMount(){
 
- 
-
-        database().ref(`users/entrepreneur/${auth().currentUser.uid}`).on('value',snapshot=>{
-            if(snapshot.exists()){
-                let Items = snapshot.val();
-                let newItems = [];
-                for(let x = 0; x< 1; x++){
-                 
-                      newItems.push({
-                          
-                         
-                          numberofEmployees: Items.numberofEmployees,
-                          numberofMilestones: Items.numberofMilestones,
-                          managementExperience: Items.managementExperience,
-                          relationships: Items.relationships,
-                          TotalcapitalAmount: Items.TotalcapitalAmount,
-                          financialBackground: Items.financialBackground,
-                          numberOfCompetitors: Items.numberOfCompetitors,
-                      });
+    // retrieves entrepreneur data from database
+    database().ref(`users/entrepreneur/${auth().currentUser.uid}`).on('value',snapshot=>{
+        if(snapshot.exists()){
+            let Items = snapshot.val();
+            let newItems = [];
+            for(let x = 0; x< 1; x++){         
+                newItems.push({          
+                    numberofEmployees: Items.numberofEmployees,
+                    numberofMilestones: Items.numberofMilestones,
+                    managementExperience: Items.managementExperience,
+                    relationships: Items.relationships,
+                    TotalcapitalAmount: Items.TotalcapitalAmount,
+                    financialBackground: Items.financialBackground,
+                    numberOfCompetitors: Items.numberOfCompetitors,
+                });
               
-                }
-                this.setState({datas:newItems});
-               
-                console.log(this.state.datas);
-          
+            }
+            this.setState({datas:newItems});
+                      
             }
             
         });
+        //retrieves chart data of current user
         database().ref(`charts/${auth().currentUser.uid}`).on('value', snapshot=>{
             if(snapshot.exists()){
                 console.log(snapshot.val());
@@ -103,23 +91,22 @@ componentDidMount(){
             
     
         });
+        // retrieves data of current user from database
         database().ref(`users/${auth().currentUser.uid}`).on('value', snapshot =>{
             console.log(snapshot.val());
             let Items = snapshot.val();
            let newItems = [];
            for(let x = 0; x< 1; x++){
-            
                  newItems.push({
-                     companyName: Items.companyName,
-                     companyDescription: Items.companyDescription
+                    companyName: Items.companyName,
+                 companyDescription: Items.companyDescription
                     
-                 });
-         
+                });
            }
     
     
             this.setState({items : newItems});
-            console.log(this.state.items);
+
         });
 
 
@@ -128,7 +115,7 @@ componentDidMount(){
 
 
     
-    
+    // handles generate Report functionality
     handleBrain(managementExperience, financialBackground, capitalAmount, milestones, competitors,employees){
 
         var ExperienceWeightS = 0; 
@@ -297,7 +284,7 @@ componentDidMount(){
              EmployeesWeightR = 0;
         }
          
-         
+         // saves data to database
         database().ref(`stats/${auth().currentUser.uid}`).set({
             
             Experience: managementExperience,
@@ -314,7 +301,7 @@ componentDidMount(){
       render(){
         return(
             <View style={{backgroundColor:'#f0f8fa'}}>
-                <StatusBar backgroundColor="#eb7434"/>
+                <StatusBar backgroundColor="#f85900"/>
                 <ScrollView>
                     <View style={styles.chart}>
              
@@ -647,7 +634,7 @@ const styles = StyleSheet.create({
         padding: 10,
         textAlign:'center',
         borderRadius:10,
-        backgroundColor:'#ffbf00',
+        backgroundColor:'#f85900',
     },
     questionsTxt:{
         fontFamily:'Georgia, Serif',

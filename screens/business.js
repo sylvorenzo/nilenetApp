@@ -8,6 +8,7 @@ import {
   } from 'react-native-paper';
 
 class BusinessRegistrationScreen extends Component{
+    //This is page is where the content comes for how to register your business.
 
     constructor(props){
         super(props);
@@ -18,7 +19,7 @@ class BusinessRegistrationScreen extends Component{
     render(){
         return(
             <ScrollView>
-                <StatusBar backgroundColor="gray"/>
+                <StatusBar backgroundColor="#f85900"/>
                 <Card style={styles.card}>
                     <Text style={styles.title}> STEP 1: Create An Account</Text>
                     <Text style={styles.content}>
@@ -167,7 +168,9 @@ class BusinessRegistrationScreen extends Component{
 }
 export default BusinessRegistrationScreen;
 
+// styles component created for styling component.
 const styles = StyleSheet.create({
+    
     link:{
         fontFamily:'georgia,serif',
         fontSize:15,

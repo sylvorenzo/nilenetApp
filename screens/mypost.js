@@ -1,19 +1,14 @@
-import React, {Component, useEffect, useState} from 'react'
-import {ScrollView,View,Image, Text, StyleSheet} from 'react-native'
+import React, { useEffect, useState} from 'react'
+import {ScrollView,View, Text, StyleSheet} from 'react-native'
 import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth';
-import { DrawerItemList } from '@react-navigation/drawer';
-import {
-    Avatar,
-    Title,
-    Caption,
-    Card,
-  } from 'react-native-paper';
+import {Card} from 'react-native-paper';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 function MyPostScreen({route}){
 
-    console.log(route.params.paramkey);
-    var [ProjectPosts, setProjectPost] = useState([]);
+    const [ProjectPosts, setProjectPost] = useState([]);
 
     useEffect(()=>{
 
@@ -23,9 +18,9 @@ function MyPostScreen({route}){
         if(snapshot.exists()){
             let projectId = Object.values(snapshot.val());  
             let newPosts = [];
-            var extensionArray =[];
+            
 
-            let projectChildren = Object.values(projectId).forEach(childsnapshot =>{
+            Object.values(projectId).forEach(childsnapshot =>{
        
               
                   newPosts.push({
@@ -37,20 +32,25 @@ function MyPostScreen({route}){
                       projectStatus: childsnapshot.projectStatus,
                       projectDescription: childsnapshot.projectDescription
                   })
-                  extensionArray =[...extensionArray, newPosts]
-                setProjectPost(ProjectPosts = extensionArray);
+                  
+                setProjectPost([newPosts]);
             });                
         }
     })
     
     
     },[])
+    // handles post delete functionality.
+    function removePost(projectId){
+        database().ref(`public/posts/${projectId}`).remove();
+        database().ref(`posts/entrepreneurs/${auth().currentUser.uid}/${projectId}`).remove();
+    }
   
     return(
         <ScrollView>
             {ProjectPosts.map(item=>item.map(post=>{
                 
-                console.log(post)
+                console.log(item)
     
                 
                     return(
@@ -66,6 +66,26 @@ function MyPostScreen({route}){
                             <Text style={styles.Title}>{post.projectTitle}</Text>
                             <Text>{post.projectStatus}</Text>
                             <Text>{post.projectDescription}</Text>
+                            {
+                                auth().currentUser.uid === route.params.paramkey ?(
+                                    <View style={{paddingTop:110, paddingLeft:300}}>
+                                        <TouchableOpacity onPress={()=>removePost(post.projectId)}>
+                                            <MaterialCommunityIcons
+                                                name="trash-can"
+                                                size={30}
+                                                color="#f85900"
+                                            />
+                                        </TouchableOpacity>
+                                    </View>
+                                ):(
+                                    <View>
+
+                                    </View>
+                                )
+
+                                
+                            }
+                            
                         </Card>
                         
                             
@@ -74,16 +94,10 @@ function MyPostScreen({route}){
                         </View>
 
                     )
-                
-
-                
-
-
                 }
             ))}
         </ScrollView>
     )
-   
 }
 export default MyPostScreen;
 const styles = StyleSheet.create({

@@ -35,7 +35,7 @@ class ProjectScreen extends Component{
         if(snapshot.exists()){
         let projectId = Object.values(snapshot.val());
         let newPosts = [];
-        let projectChildren = Object.values(projectId).forEach(childsnapshot =>{
+        Object.values(projectId).forEach(childsnapshot =>{
     
             
                 newPosts.push({
@@ -51,7 +51,7 @@ class ProjectScreen extends Component{
                 })
             
             this.setState({Posts: newPosts});
-            console.log(this.state.Posts)
+      
             });       
         }
         });
@@ -84,7 +84,9 @@ class ProjectScreen extends Component{
     messaging()
     .getToken()
     .then((fcmToken) => {
-      console.log('FCM Token -> ', fcmToken);
+      
+
+      //saves token data to database.
       database().ref(`mykey/${auth().currentUser.uid}`).set({
         token: fcmToken
       }).catch(error=>{
@@ -96,11 +98,11 @@ class ProjectScreen extends Component{
     
     }
     render(){
-      const {navigate } = this.props.navigation;
+     
         return(
             <View>
-                <StatusBar backgroundColor="#eb7434"/>
-                <View style={{backgroundColor:'#eb7434', height:100, borderBottomRightRadius:25,}}>
+                <StatusBar backgroundColor="#f85900"/>
+                <View style={{backgroundColor:'#f85900', height:100, borderBottomRightRadius:25,}}>
                 <TextInput
                     style={styles.searchBar}
                     placeholder="Search..." 
@@ -117,7 +119,7 @@ class ProjectScreen extends Component{
                             <View style={styles.feedContainer}>
                                 {this.state.items.map(item=>{
                               
-                                    if(item.sectorOfBusiness.indexOf(this.state.search)>-1){
+                                    if(item.sectorOfBusiness == this.state.search){
                                           return(
                                               <View>
                                               <View style={styles.profileSection}>
@@ -155,15 +157,20 @@ class ProjectScreen extends Component{
                                               
                                           )
                                     }else if(this.state.search === ''){
+                                      
                                       return(
                                           <View>
                                           <View style={styles.profileSection}>
+                                            <Touch onPress={()=>this.props.navigation.navigate('userView',{paramkey:items.uid})}>
+                                            
                                           <Avatar.Image
                                               
                                               source={{uri:items.profileImage}}
                                               size={60}
                                           />
-                                          <Touch onPress={()=> this.props.navigation.navigate('chat',{paramkey: items.id})} >
+                                          </Touch>
+                                      
+                                          <Touch onPress={()=> this.props.navigation.navigate('Chat',{paramkey: items.uid})} >
                                               <Text style={styles.Title}>{items.username} {items.surname}</Text>
                                           </Touch>
                                           </View>
@@ -401,6 +408,7 @@ const styles = StyleSheet.create({
           height:50,
           borderWidth: 1,
           padding: 12,
+          color:'black',
           backgroundColor: 'white'
       }
   })

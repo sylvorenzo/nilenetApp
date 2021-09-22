@@ -1,4 +1,4 @@
-import React,{Component,useRef, useEffect, useState, createRef} from 'react'
+import React,{Component} from 'react'
 import {View, 
     Text, 
     TextInput, 
@@ -6,28 +6,18 @@ import {View,
     TouchableOpacity as Touch,
     ScrollView,
     StatusBar,
-    KeyboardAvoidingView
+  
     
 } from 'react-native';
-import {
-    Avatar,
-    Title,
-    ProgressBar,
-    Card,
-  } from 'react-native-paper';
+import {Avatar} from 'react-native-paper';
 import {PieChart} from 'react-native-chart-kit';    
-import RBSheet from "react-native-raw-bottom-sheet";
 import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth';
-import * as Progress from 'react-native-progress'
 
-
+// this is where the feed content is programmed
 class FeedScreen extends Component{
   constructor(props){
     super(props);
-      this.refRBSheet = createRef();
-      this.refRBSheet1 = createRef();
-      this.messageContainer =createRef();
     this.state = {
        users:[],
        query: [],
@@ -52,7 +42,7 @@ class FeedScreen extends Component{
       if(snapshot.exists()){
         let item = snapshot.val();
     
-  
+        //handles whether the user is an entrepreneur or investor
         if(item.type === 'Entrepreneur'){
           database().ref(`users/${auth().currentUser.uid}`).on('value', snapshot=>{
             let Item = snapshot.val();
@@ -73,6 +63,8 @@ class FeedScreen extends Component{
       
       if(snapshot.exists()){
           let userInfo = snapshot.val();
+
+          
           let userKeys = Object.keys(userInfo);
           const extensionArray = [];
         for(let x = 0; x< userKeys.length; x++){
@@ -93,6 +85,7 @@ class FeedScreen extends Component{
               token:item.token
             })
             extensionArray[x] = newItems;
+            
             this.setState({users: extensionArray});
           })
               
@@ -105,8 +98,10 @@ class FeedScreen extends Component{
         database().ref(`charts`).on('value', snapshot=>{
           if(snapshot.exists()){
             var chartValues = snapshot.val();
+
+            // stores database keys in chart items.
             let chartItems = Object.keys(snapshot.val());
-            
+           
             let extensionArray = [];
             for (var x = 0; x < chartItems.length; x++){
       
@@ -126,7 +121,7 @@ class FeedScreen extends Component{
                     tag3: item.tag3,
                     sectorOfBusiness: item.sector,
                   })
-                  extensionArray = [...extensionArray, NewItems];
+                  extensionArray[x] = NewItems;
                   this.setState({query:extensionArray});
                 })
             }
@@ -165,15 +160,19 @@ class FeedScreen extends Component{
         }
   
       })
+      // retrieves stats data from database.
       database().ref(`stats`).on('value',snapshot=>{
         if(snapshot.exists()){
            const stats = snapshot.val();
            
-
+          // stores database keys in keys variable.
            var keys = Object.keys(stats);
-          
+          //loops through keys
            for(let x = 0; x < keys.length; x++){
-             database().ref(`stats/${keys[x]}`).on('value',snap=>{
+
+              var key = keys[x];
+              //accesses stats data for each key
+             database().ref(`stats/` + `${key} `).on('value',snap=>{
                if(snap.exists()){
                   const items = snap.val();
                   const extensionArray = [];
@@ -185,7 +184,8 @@ class FeedScreen extends Component{
                     Employees: items.Employees,
                     Experience: items.Experience,
                     Milestones: items.Milestones,
-                    uid: items.uid
+                    uid: items.uid,
+                    sector: items.sectorOfBusiness
                   });
                   extensionArray[x] = newItems;
                   this.setState({statistic: extensionArray})
@@ -200,9 +200,8 @@ class FeedScreen extends Component{
     }
 
    
-
+      // parses user id to the user view page
       userProfileDrawerOpener = (userid) => {
-        this.refRBSheet.current.open()
         this.setState({key: userid});
 
       
@@ -231,7 +230,7 @@ handleFollow(uid,username,profileImage){
       render(){
         return(
           <View>
-            <View style={{backgroundColor:'#eb7434', height:100, borderBottomRightRadius:25,}}>
+            <View style={{backgroundColor:'#f85900', height:100, borderBottomRightRadius:25,}}>
             <TextInput
                   style={styles.searchBar}
                   placeholder="Search..." 
@@ -241,34 +240,28 @@ handleFollow(uid,username,profileImage){
             </View>
 
               <ScrollView>
-
-
-                  
                   {
                       this.state.query.map(items=>items.map(item=>{
-                        
-                          if(this.state.sectorOfBusiness.indexOf(this.state.search)>-1){
-                              return(
-                                  <View style={styles.feedContainer}>
-                                  {this.state.users.map(user=>user.map(variable=>{
-                                    console.log('sector: ',variable.sector);
-                                      if(item.id === variable.id){
-                                          return(
-                                            <View>
-                                              <View style={styles.profileSection}>
-                                              <Avatar.Image
-                                              
-                                                  source={{uri:variable.profileImage}}
-                                                  size={50}
-                                              />
-                                              <Touch onPress={()=> this.props.navigation.navigate('userView',{paramkey:variable.id})}>
-                                              <Text style={styles.Title}>{variable.username} {variable.surname}</Text>
-                                              </Touch>
-                                          
-                                              </View>
-                                              <PieChart
+                        return(
+                          <View style={styles.feedContainer}>
+                          <StatusBar barStyle={'dark-content'} backgroundColor={"#f85900"} color="orange"/>
+                          {this.state.users.map(user=>user.map(variable=>{                             
+                            if(variable.sector == this.state.search){
+                              if(item.id == variable.id){
+                                return(
+                                  <View>
+                                    <View style={styles.profileSection}>
+                                      <Avatar.Image
+                                        source={{uri:variable.profileImage}}
+                                        size={50}
+                                      />
+                                      <Touch onPress={()=> this.props.navigation.navigate('userView',{paramkey:variable.id})}>
+                                        <Text style={styles.Title}>{variable.username} {variable.surname}</Text>
+                                      </Touch>
+                                    </View>
+                                    <PieChart
                                       data={
-                                          [
+                                            [
                                               {
                                                 name:  item.tag1,
                                                 result: item.point1,
@@ -289,271 +282,172 @@ handleFollow(uid,username,profileImage){
                                                 color: "orange",
                                                 legendFontColor: "white",
                                                 legendFontSize: 10
-                                              },]
-                                      }
-                                      width={300}
-                                      height={200}
-                                      chartConfig={{
-                                        backgroundGradientFrom: "purple",
-                                        backgroundGradientFromOpacity: 0,
-                                        backgroundGradientTo: "orange",
-                                        backgroundGradientToOpacity: 0.5,
-                                        color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
-                                        strokeWidth: 2, // optional, default 3
-                                        barPercentage: 0.5,
-                                        useShadowColorFromDataset: false // optional
-                                      }}
-                                      accessor={"result"}
-                                      backgroundColor={"transparent"}
-                                      paddingLeft={'10'}
-                                      relative
-                                  />
-                                  <View style={styles.descriptionContainer}>
-                                      <Text style={styles.descriptionTxt}>{variable.companyName}</Text>
-                                      <Text>{variable.companyDescription}</Text> 
-                                      {this.state.statistic.map(values=>values.map(value=>{
-
-                                        console.log('value: ', value);
-                                        if(item.id === value.uid){
-                                          return(
-                                            <View>
-                                      <Text style={styles.header}>EMPLOYEES </Text>
-                                          <Text style={styles.result}>{value.Employees} </Text>
-                                      <Text style={styles.header}>CAPITAL </Text>
-                                         <Text style={styles.result}>R{value.Capital}</Text>
- 
-                                      <Text style={styles.header}>COMPETITORS  </Text>
-                                      <Text style={styles.result}>{value.Competitors} </Text>
-
-                                      <Text style={styles.header}>MANAGMENT EXPERIENCE </Text>
-                                      <Text style={styles.result}>{value.Experience} </Text>
- 
-                                      <Text style={styles.header}>MILESTONES  </Text>
-                                      <Text style={styles.result}>{value.Milestones} </Text>
-                                      
+                                              },
+                                            ]
+                                          }
+                                          width={300}
+                                          height={200}
+                                          chartConfig={{
+                                            backgroundGradientFrom: "purple",
+                                            backgroundGradientFromOpacity: 0,
+                                            backgroundGradientTo: "orange",
+                                            backgroundGradientToOpacity: 0.5,
+                                            color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
+                                            strokeWidth: 2, // optional, default 3
+                                            barPercentage: 0.5,
+                                            useShadowColorFromDataset: false // optional
+                                          }}
+                                          accessor={"result"}
+                                          backgroundColor={"black"}
+                                          paddingLeft={'10'}
+                                          relative
+                                    />
+                                    <View style={styles.descriptionContainer}>
+                                        <Text style={styles.descriptionTxt}>{variable.companyName}</Text>
+                                        <Text>{variable.companyDescription}</Text> 
+                                        {this.state.statistic.map(values=>values.map(value=>{
+  
+                                          if(item.id === value.uid){
+                                            return(
+                                              <View>
+                                                <Text style={styles.header}>EMPLOYEES </Text>
+                                                    <Text style={styles.result}>{value.Employees} </Text>
+                                                <Text style={styles.header}>CAPITAL </Text>
+                                                  <Text style={styles.result}>R{value.Capital}</Text>
+          
+                                                <Text style={styles.header}>COMPETITORS  </Text>
+                                                <Text style={styles.result}>{value.Competitors} </Text>
+  
+                                                <Text style={styles.header}>MANAGMENT EXPERIENCE </Text>
+                                                <Text style={styles.result}>{value.Experience} </Text>
+          
+                                                <Text style={styles.header}>MILESTONES  </Text>
+                                                <Text style={styles.result}>{value.Milestones} </Text>
+                                                
+                                                      </View>
+                                                    )
+                                                  }
+                                                }))}
+                                                              
                                             </View>
-                                          )
-                                        }
-                                      }))}
-                                                     
-                                  </View>
-                                  
-                                  </View>
-                                          )
-                                      }
+                                            
+                                            </View>
+                                            )
+                                          }
+                                          
+                                        }else  if(this.state.search === ''){
+                                          return(
+                                           
+                                              <View >
+                                              {this.state.users.map(user=>user.map(variable=>{
+                                                  if(item.id === variable.id){
+                                                      return(
+                                                        <View>
+                                                          <View style={styles.profileSection}>
+                                                          <Avatar.Image
+                                                          
+                                                              source={{uri:variable.profileImage}}
+                                                              size={50}
+                                                          />
+                                                          <Touch onPress={()=>this.props.navigation.navigate('userView',{paramkey:variable.id})}>
+                                                              <Text style={styles.Title}>{variable.username} {variable.surname}</Text>
+                                                          </Touch>
+                                                          
+                                                          </View>
+                                                          <PieChart
+                                                  data={
+                                                      [
+                                                          {
+                                                            name:  item.tag1,
+                                                            result: item.point1,
+                                                            color: '#3da6e3',
+                                                            legendFontColor: "white",
+                                                            legendFontSize: 10
+                                                          },
+                                                          {
+                                                            name: item.tag2,
+                                                            result: item.point2,
+                                                            color: "white",
+                                                            legendFontColor: "white",
+                                                            legendFontSize: 10
+                                                          },
+                                                          {
+                                                            name: item.tag3,
+                                                            result: item.point3,
+                                                            color: "orange",
+                                                            legendFontColor: "white",
+                                                            legendFontSize: 10
+                                                          },]                                            
+                                                  }
+                                                  width={300}
+                                                  height={200}
+                                                  chartConfig={
+                                                    {
+                                                      backgroundGradientFrom: "purple",
+                                                      backgroundGradientFromOpacity: 0,
+                                                      backgroundGradientTo: "orange",
+                                                      backgroundGradientToOpacity: 0.5,
+                                                      color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
+                                                      strokeWidth: 2, // optional, default 3
+                                                      barPercentage: 0.5,
+                                                      useShadowColorFromDataset: false // optional
+                                                    }
+                                                  }
+                                                  accessor={"result"}
+                                                  backgroundColor={"transparent"}
+                                                  paddingLeft={'10'}
+                                                  relative
+                                              />
+                                              <View style={styles.descriptionContainer}>
+                                                
+                                                  <Text style={styles.descriptionTxt}>{variable.companyName}</Text>
+                                                  <Text>{variable.companyDescription}</Text>    
+                                                  {this.state.statistic.map(values=>values.map(value=>{
+            
+                                                    console.log('value: ', value);
+                                                    if(item.id = value.uid){
+                                                      return(
+                                                        <View>
+                                                    <Text style={styles.header}>EMPLOYEES </Text>
+                                                      <Text style={styles.result}>{value.Employees} </Text>
+                                                    <Text style={styles.header}>CAPITAL </Text>
+                                                    <Text style={styles.result}>R{value.Capital}</Text>
+            
+                                                    <Text style={styles.header}>COMPETITORS  </Text>
+                                                    <Text style={styles.result}>{value.Competitors} </Text>
+            
+                                                    <Text style={styles.header}>MANAGMENT EXPERIENCE </Text>
+                                                    <Text style={styles.result}>{value.Experience} </Text>
+            
+                                                    <Text style={styles.header}>MILESTONES  </Text>
+                                                    <Text style={styles.result}>{value.Milestones} </Text>
+            
+                                                        </View>
+                                                      )
+                                                    }
+                                                    }))}                        
+                                              </View>
+            
+                                              </View>
+                                                      )
+                                                  }
+                                              }))}
+            
+                                            </View>
+                                          ) 
+                                    }
                                   }))}
 
                                   </View>
                               )
-                          }else if(this.state.sectorOfBusiness.indexOf(this.state.sectorOfBusiness)> -1){
-                              return(
-                               
-                                  <View style={styles.feedContainer}>
-                                  {this.state.users.map(user=>user.map(variable=>{
-                                      if(item.id === variable.id){
-                                          return(
-                                            <View>
-                                              <View style={styles.profileSection}>
-                                              <Avatar.Image
-                                              
-                                                  source={{uri:variable.profileImage}}
-                                                  size={50}
-                                              />
-                                              <Touch onPress={()=>userProfileDrawerOpener(variable.id)}>
-                                                  <Text style={styles.Title}>{variable.username}</Text>
-                                              </Touch>
-                                              
-                                              </View>
-                                              <PieChart
-                                      data={
-                                          [
-                                              {
-                                                name:  item.tag1,
-                                                result: item.point1,
-                                                color: 'orange',
-                                                legendFontColor: "white",
-                                                legendFontSize: 10
-                                              },
-                                              {
-                                                name: item.tag2,
-                                                result: item.point2,
-                                                color: "white",
-                                                legendFontColor: "white",
-                                                legendFontSize: 10
-                                              },
-                                              {
-                                                name: item.tag3,
-                                                result: item.point3,
-                                                color: "gray",
-                                                legendFontColor: "white",
-                                                legendFontSize: 10
-                                              },]                                            
-                                      }
-                                      width={300}
-                                      height={200}
-                                      chartConfig={
-                                        {
-                                          backgroundGradientFrom: "purple",
-                                          backgroundGradientFromOpacity: 0,
-                                          backgroundGradientTo: "orange",
-                                          backgroundGradientToOpacity: 0.5,
-                                          color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
-                                          strokeWidth: 2, // optional, default 3
-                                          barPercentage: 0.5,
-                                          useShadowColorFromDataset: false // optional
-                                        }
-                                      }
-                                      accessor={"result"}
-                                      backgroundColor={"transparent"}
-                                      paddingLeft={'10'}
-                                      relative
-                                  />
-                                  <View style={styles.descriptionContainer}>
-                                    <StatusBar barStyle={'dark-content'} backgroundColor={"#e3ded8"} color="orange"/>
-                                      <Text style={styles.descriptionTxt}>{variable.companyName}</Text>
-                                      <Text>{variable.companyDescription}</Text>    
-                                      {this.state.statistic.map(values=>values.map(value=>{
-
-                                        console.log('value: ', value);
-                                        if(item.id = value.uid){
-                                          return(
-                                            <View>
-                                        <Text style={styles.header}>EMPLOYEES </Text>
-                                          <Text style={styles.result}>{value.Employees} </Text>
-                                        <Text style={styles.header}>CAPITAL </Text>
-                                        <Text style={styles.result}>R{value.Capital}</Text>
-
-                                        <Text style={styles.header}>COMPETITORS  </Text>
-                                        <Text style={styles.result}>{value.Competitors} </Text>
-
-                                        <Text style={styles.header}>MANAGMENT EXPERIENCE </Text>
-                                        <Text style={styles.result}>{value.Experience} </Text>
-
-                                        <Text style={styles.header}>MILESTONES  </Text>
-                                        <Text style={styles.result}>{value.Milestones} </Text>
-
-                                            </View>
-                                          )
-                                        }
-                                        }))}                        
-                                  </View>
-
-                                  </View>
-                                          )
-                                      }
-                                  }))}
-
-                                </View>
-                              ) 
-                          }
-                      }))
+                    }))
                   }
-
-                  <RBSheet
-                    ref={this.refRBSheet}
-                    closeOnDragDown={false}
-                    closeOnPressMask={false}
-                     customStyles={{
-                        wrapper: {
-                          backgroundColor: "transparent"
-                        },
-                        draggableIcon: {
-                        backgroundColor: "orange"
-                        }
-                        }}
-                        height={800}
-                          animationType="fade"
-                        >
-                        {
-                          this.state.users.map(user=>user.map(variable=>{
-                            
-                              while(variable.id === this.state.key){
-                                return(
-                                  <ScrollView>
-                                  <View style={styles.banner}>
-                                    <Touch onPress={()=> this.refRBSheet.current.close()}>
-                                       <Text style={styles.bannerBack}>Back</Text>
-                                    </Touch>
-
-                                    <Text style={styles.bannerTxt}>{variable.companyName}</Text>
-                                  </View>
-                               
-                                    <View style={styles.child}>
-                                        <View style={styles.profileViewerSection}>
-                                          <Avatar.Image
-                                            source={{uri: variable.profileImage}}
-                                            size={150}
-                                          />
-                                          <Title style={styles.profileViewerSectionTxt}>{variable.username} {variable.surname}</Title>
-                                        </View>
-                                        <View style={styles.subChild}>
-                                            <Touch onPress={()=>this.handleFollow(variable.id, variable.username, variable.profileImage)}>
-                                              <Text style={styles.btn}>{this.state.status}</Text>
-                                            </Touch>
-                                            <Touch onPress={()=>{
-                                              this.props.navigation.navigate('Chat', {paramkey: this.state.key, token:variable.token });
-                                              this.refRBSheet.current.close()}}>
-                                              <Text style={styles.btn}>Message</Text>
-                                            </Touch>
-                                            
-                                        </View>
-                                        <View style={styles.projectContainer}>
-
-                                        <Text style={styles.projectTitle}>Projects</Text>
-                                        <ScrollView>
-                                        <View style={{flexDirection:'row',height:600}}>
-                                          {
-                                            this.state.projects.map(post=>{
-                                              if(variable.id === post.uid){
-                                                return(
-                                                  <Touch onPress={()=> this.props.navigation.navigate('posts',{paramkey: post.uid})}>
-                                                 <Card
-                                                  style={{width:150,
-                                                    height:150,
-                                                    backgroundColor:'transparent',
-                                                    margin:10,
-                                                    borderColor:'white',
-                                                    borderWidth:0
-
-                                                    }}
-                                                  >
-                                                    <Card.Cover 
-                                                    
-                                                    style={styles.image}
-                                                    source={{uri:post.projectImage}} />
-                                                  </Card>                                                
-                                                  </Touch>
-
-                                                   
-                                                ) 
-                                              }
-                                            })
-                                          }
-                                        </View>
-                                        </ScrollView>
-
-                                        </View>
-                                    </View>
-
-                                  
-
-
-                                  </ScrollView>
-
-                                  
-                                )
-                              }
-                            
-                          }))
-                        }
-                  </RBSheet>
-               
-              </ScrollView>
+              </ScrollView> 
           </View>
       )
   
+    }
 }
-      }
         
 export default FeedScreen;
 
@@ -766,6 +660,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         height:50,
         padding: 12,
+        color:'black',
         backgroundColor: 'white'
     }
 })

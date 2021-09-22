@@ -2,30 +2,48 @@ import React from 'react';
 import {View,
     Text,
     StatusBar, 
-    StyleSheet, 
+    StyleSheet,
+    Image, 
+    ScrollView,
     TouchableOpacity as Touch,
     Linking} from 'react-native';
-
+import SVA1 from '../assets/opp.jpg';
+import opp from '../assets/opp3.jpg'
 
 function OpportunityScreen({navigation}){
 
     return(
-        <View>
-            <StatusBar backgroundColor="#eb7434"/>
-            <View style={styles.contentContainer}>
-                <Text style={styles.heading}>Opportunities</Text>
-                <Text style={styles.content}>
-                        Opportunities are a time or a set of circumstances that makes it possible to do 
-                        something. Furthermore, NILENET provides Entrepreneurs with the opportunity to gain access 
-                        to markets by placing all the necessary information with links to government Tenders, and projects 
-                        which parties with similar interests can come together and work on something that would be most beneficial 
-                        to society and all parties involved.
-                </Text>
-
-                <Text style={styles.content}>
-                        Entrepreneurs can collaborate with each other 24/7, government Tenders however, does not have those benefits.
-                        To find out more about tenders visit the tender site.
-                </Text>
+        <ScrollView>
+            <StatusBar backgroundColor="#f85900"/>
+            <View style={styles.contentContainer}> 
+            <Touch onPress={()=>Linking.openURL('https://www.africasharedvaluesummit.com/Call-for-Entries').catch(ee=> console.error('An Error Occurred', ee))}>
+             <Image source={SVA1} style={
+                { 
+                    width:400,
+                    height:500, 
+                    width:'100%',
+                    
+                }
+                 } 
+                 
+                 />
+            </Touch>
+             
+            </View>
+            <View style={styles.contentContainer}> 
+            <Touch onPress={()=>Linking.openURL('https://evolve.eventoptions.co.za/register/investor_workshop/details').catch(ee=> console.error('An Error Occurred', ee))}>
+             <Image source={opp} style={
+                { 
+                    width:400,
+                    height:500, 
+                    width:'100%',
+                    
+                }
+                 } 
+                 
+                 />
+            </Touch>
+             
             </View>
             <Touch onPress={()=>navigation.navigate('project')}>
             <View style={styles.projectsContainer}>
@@ -38,7 +56,7 @@ function OpportunityScreen({navigation}){
             </View>
             </Touch>
 
-        </View>
+        </ScrollView>
     )
 }
 export default OpportunityScreen;
@@ -70,6 +88,7 @@ const styles = StyleSheet.create({
     contentContainer:{
         margin:10,
         borderRadius:10,
+        
         backgroundColor: '#e0e0e0'
     },
     content:{

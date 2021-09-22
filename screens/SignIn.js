@@ -7,18 +7,17 @@ import{BlurView} from '@react-native-community/blur';
 import {AuthContext} from '../components/context';
 
 function SignInScreen({navigation}){
-    
-
-    
+    // input variables    
     const[data, setData]= useState({
         email:'',
         password:'',
         check_textInputChange:false,
         secureTextEntry:true,
     });
-    
+    // sign in function from App.js 
     const {signIn} = React.useContext(AuthContext);
     
+    // handles input change
     const textInputChange = (val)=>{
         if(val.length !== 0){
              setData({
@@ -34,6 +33,7 @@ function SignInScreen({navigation}){
             })
         }
     }
+    //handles input change
     const handlePasswordChange = (val)=>{
         if(val.length !== 0){
              setData({
