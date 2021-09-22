@@ -6,12 +6,7 @@ import background from '../assets/launch_screen.jpg';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 // this is the page where the one-to-one chat occurs between users.
-import {
-    Avatar,
-    Title,
-    Caption,
-    Card,
-  } from 'react-native-paper';
+import {Avatar} from 'react-native-paper';
 
 
 
@@ -23,7 +18,7 @@ function ChatScreen({route}){
     const  messageArray =[]; // the data is retrieved and stored in this array.
     const [token,setToken] = useState(''); // this is where the token is stored and used for cloud messaging.
     const [username, setUsername] = useState(''); // the username which is retrieved from database is stored in this state.
-    const [surname, setSurname] = useState(''); // the surname which is retrieved from database is stored in this state.
+   
 
     const[messages,setMessages] =useState([]);// used to store data from database
    var [users,setUsers] = useState([]);// used to store data from database
